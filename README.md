@@ -1,2 +1,2 @@
-# rust_wasm_ttt
+# rust-wasm-game
 Rust compiled to WASM project
