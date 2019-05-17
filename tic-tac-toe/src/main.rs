@@ -18,13 +18,16 @@ impl Board {
 
 #[allow(unused_must_use)]
 impl fmt::Display for Board {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    /*  Display for board (can be used with println! and similar functions
+        to print the tic tac toe board)
+    */
         let mut total_lines = &SIZE - 1;
-        write!(f, "\n");
+        write!(formatter, "\n");
         for row in &self.squares {
-            write!(f, "  {} | {} | {}\n", row[0], row[1], row[2]);
+            write!(formatter, "  {} | {} | {}\n", row[0], row[1], row[2]);
             if total_lines > 0 {
-                write!(f, " -----------\n");
+                write!(formatter, " -----------\n");
                 total_lines -= 1;
             }
         }
@@ -36,10 +39,6 @@ fn main() {
     let board = Board::new();
     println!("{}", board);
 }
-
-
-// TODO: test board contents (char array)
-
 
 #[test]
 fn test_board_display() {
@@ -53,4 +52,14 @@ fn test_board_display() {
 "#;
     let init_board = Board::new();
     assert_eq!(expect_board, format!("{}", init_board));
+}
+
+#[test]
+fn test_squares_vals() {
+    let squares: [[char; 3]; 3];
+    squares = [[' ', ' ', ' '], 
+               [' ', ' ', ' '], 
+               [' ', ' ', ' ']];
+    let init_board = Board::new();
+    assert_eq!(squares, init_board.squares);
 }
