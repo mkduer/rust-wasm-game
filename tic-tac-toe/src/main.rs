@@ -16,7 +16,7 @@ impl Board {
     }
 }
 
-// 
+#[allow(unused_must_use)]
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut total_lines = &SIZE - 1;
@@ -35,4 +35,22 @@ impl fmt::Display for Board {
 fn main() {
     let board = Board::new();
     println!("{}", board);
+}
+
+
+// TODO: test board contents (char array)
+
+
+#[test]
+fn test_board_display() {
+    // note: decreased indent for raw-string
+    let expect_board = r#"
+    |   |  
+ -----------
+    |   |  
+ -----------
+    |   |  
+"#;
+    let init_board = Board::new();
+    assert_eq!(expect_board, format!("{}", init_board));
 }
