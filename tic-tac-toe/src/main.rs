@@ -37,6 +37,10 @@ fn main() {
     println!("{}", board);
 }
 
+
+// TODO: test board contents (char array)
+
+
 #[test]
 fn test_board_display() {
     // note: decreased indent for raw-string
@@ -49,14 +53,4 @@ fn test_board_display() {
 "#;
     let init_board = Board::new();
     assert_eq!(expect_board, format!("{}", init_board));
-}
-
-#[test]
-fn test_squares_vals() {
-    let squares: [[char; 3]; 3];
-    squares = [[' ', ' ', ' '], 
-               [' ', ' ', ' '], 
-               [' ', ' ', ' ']];
-    let init_board = Board::new();
-    assert_eq!(squares, init_board.squares);
 }
