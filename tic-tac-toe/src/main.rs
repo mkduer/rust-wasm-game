@@ -52,20 +52,27 @@ impl Game {
             AutoPlay { play_type: [false, true], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "automatic".to_string()];
             },
-            AutoPlay { play_type: [_, _], .. } => {
+            AutoPlay { .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "automatic".to_string()];
             },
         }
     }
 
     fn update(&mut self) {
-        // TODO: add update function: while game not ended, update_move
+        // have the current player make a move
         println!("implement update()");
         if self.auto_play.play_type[self.curr_player] {
             self.auto_move();
         } else {
             self.manual_move();
         }
+        self.end_game = self.is_endgame();
+        self.curr_player = self.switch_player();
+    }
+
+    fn switch_player(&mut self) -> usize {
+        // switch current player
+        if self.curr_player == 0 { 1 } else { 0 }
     }
 
     fn auto_move(&mut self) {
@@ -78,10 +85,11 @@ impl Game {
         println!("make a manual move");
     }
 
-    fn is_endgame(&mut self) {
-        // TODO: check for win/draw state (draw state only needs to be checked if the board is full)
+    fn is_endgame(&mut self) -> bool {
         println!("is the game won/drawn?");
-        self.end_game = true;
+        // TODO: check for win/draw state (draw state only needs to be checked if the board is full)
+        // TODO: print out the results and board if it is the end of the game, return true if end game
+        true
     }
 
     fn reset(&mut self) {
@@ -102,7 +110,7 @@ impl Game {
 #[allow(unused_must_use)]
 impl fmt::Display for Game {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        //  Display for game state
+        //  Display game state (allows display with macros like println!)
         let mut game_status = format!("in play, {}'s turn", &self.players[self.curr_player]);
         if self.end_game {
             game_status = "ended".to_string();
@@ -124,7 +132,7 @@ impl fmt::Display for Game {
 
 fn main() {
     let mut game = Game::new();
-    game.start(true, true);
+    game.start(false, true);
     println!("{}", game);
 
     while game.end_game == false {
@@ -143,6 +151,9 @@ mod tests {
     use super::*;
 
     // TODO: test reset()
+    // TODO: test auto_move
+    // TODO: test manual_move
+    // TODO: test switch_player
     // TODO: test update()
 
     #[test]
@@ -150,13 +161,21 @@ mod tests {
         // test that players are set with correct autoplay booleans
         let mut game = Game::new();
         game.start(true, true);
-        assert_eq!(AutoPlay { play_type: [true, true], play_type_str: ["automatic".to_string(), "automatic".to_string()] }, game.auto_play);
+        assert_eq!(AutoPlay { play_type: [true, true], 
+                              play_type_str: ["automatic".to_string(), "automatic".to_string()] }, 
+                              game.auto_play);
         game.start(false, true);
-        assert_eq!(AutoPlay { play_type: [false, true], play_type_str: ["manual".to_string(), "automatic".to_string()] }, game.auto_play);
+        assert_eq!(AutoPlay { play_type: [false, true], 
+                              play_type_str: ["manual".to_string(), "automatic".to_string()] }, 
+                              game.auto_play);
         game.start(true, false);
-        assert_eq!(AutoPlay { play_type: [true, false], play_type_str: ["automatic".to_string(), "manual".to_string()] }, game.auto_play);
+        assert_eq!(AutoPlay { play_type: [true, false], 
+                              play_type_str: ["automatic".to_string(), "manual".to_string()] }, 
+                              game.auto_play);
         game.start(false, false);
-        assert_eq!(AutoPlay { play_type: [false, false], play_type_str: ["manual".to_string(), "manual".to_string()] }, game.auto_play);
+        assert_eq!(AutoPlay { play_type: [false, false], 
+                              play_type_str: ["manual".to_string(), "manual".to_string()] }, 
+                              game.auto_play);
     }
 
     #[test]
