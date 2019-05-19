@@ -1,4 +1,5 @@
 use std::fmt;
+use rand::{thread_rng, Rng};
 
 const SIZE: usize = 3;
 
@@ -16,12 +17,20 @@ impl Default for AutoPlay {
     }
 }
 
+#[derive(Debug, Clone)]
+struct Coord {
+    x: usize,
+    y: usize,
+    legal: bool,
+}
+
 struct Game {
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
     players: [char; 2],             // players represented by pieces
     auto_play: AutoPlay,            // type of play for each player
     end_game: bool,                 // game status: False if in play, True if ended by win/draw
+    coordinates: Vec<Coord>,        // coordinates for moves
 }
 
 impl Game {
@@ -35,11 +44,13 @@ impl Game {
             players: ['X', 'O'],
             auto_play: AutoPlay::default(), 
             end_game: false,
+            coordinates: coord_mapping(),
         }
     }
 
     fn start(&mut self, p1_auto: bool, p2_auto: bool) {
         // Set the automatic/manual play settings for each player in order to start the game
+        // Create the coordinates per game size
         self.auto_play.play_type = [p1_auto, p2_auto];
 
         match self.auto_play {
@@ -58,35 +69,63 @@ impl Game {
         }
     }
 
-    fn update(&mut self) {
-        // have the current player make a move
-        println!("implement update()");
+    fn update(&mut self) { 
+        // Have the current player choose a location for their move 
+        println!("implement update()"); 
+        let loc: usize;
         if self.auto_play.play_type[self.curr_player] {
-            self.auto_move();
+            loc = self.auto_move();
         } else {
-            self.manual_move();
+            loc = self.manual_move();
         }
+
+        // Update the board and coordinates
+        let x = self.coordinates[loc].x;
+        let y = self.coordinates[loc].y;
+        self.board[x][y] = self.players[self.curr_player];
+        self.coordinates[loc].legal = false;
+
+        println!("loc: {}, coordinates: {:?}", loc, self.coordinates[loc]);
+
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
     }
 
     fn switch_player(&mut self) -> usize {
-        // switch current player
+        // Switch current player
         if self.curr_player == 0 { 1 } else { 0 }
     }
 
-    fn auto_move(&mut self) {
-        // TODO: update_auto (randomized, legal moves)
-        println!("make an automated move");
+    fn auto_move(&mut self) -> usize {
+        // Return the location (index) for a random, legal move
+        let max_rng = SIZE * SIZE;
+        let mut rng = thread_rng();
+        let mut loc = rng.gen_range(0, max_rng);
+        let mut valid: bool = self.coordinates[loc].legal;
+
+        while valid == false {
+            loc = rng.gen_range(0, max_rng);
+            println!("loc: {}", loc);
+            valid = self.coordinates[loc].legal;
+        }
+        loc
     }
 
-    fn manual_move(&mut self) {
-        // TODO: update_manual
+    fn manual_move(&mut self) -> usize {
         println!("make a manual move");
+        let max_rng: usize = SIZE * SIZE;
+        // TODO: ask player for legal move
+        // TODO: check if it's legal    
+        // TODO: repeat until valid move
+        // TODO: return valid Coord
+        /*
+        let mut loc: usize;
+        loc
+        */
+        0
     }
 
     fn is_endgame(&mut self) -> bool {
-        println!("is the game won/drawn?");
         // TODO: check for win/draw state (draw state only needs to be checked if the board is full)
         // TODO: print out the results and board if it is the end of the game, return true if end game
         true
@@ -103,8 +142,20 @@ impl Game {
             players: ['X', 'O'],
             auto_play: self.auto_play.to_owned(),
             end_game: false,
+            coordinates: self.coordinates.to_owned(),
         };
     }
+}
+
+fn coord_mapping() -> Vec<Coord> {
+    let mut coordinates: Vec<Coord> = vec![];
+    for i in 0..SIZE {
+        for j in 0..SIZE {
+            let coord = Coord { x: i, y: j, legal: true };
+            coordinates.push(coord);
+        }
+    }
+    coordinates
 }
 
 #[allow(unused_must_use)]
@@ -132,11 +183,12 @@ impl fmt::Display for Game {
 
 fn main() {
     let mut game = Game::new();
-    game.start(false, true);
+    game.start(true, true);
     println!("{}", game);
 
     while game.end_game == false {
         game.update();
+        println!("{}", game);
     }
     game.reset();
 }
@@ -158,7 +210,7 @@ mod tests {
 
     #[test]
     fn test_player_init_settings() {
-        // test that players are set with correct autoplay booleans
+        // Test that players are set with correct autoplay booleans
         let mut game = Game::new();
         game.start(true, true);
         assert_eq!(AutoPlay { play_type: [true, true], 
@@ -180,7 +232,7 @@ mod tests {
 
     #[test]
     fn test_board_init_display() {
-        // test that init board displays correctly
+        // Test that init board displays correctly
         let mut game = Game::new();
         game.start(true, true);
 
@@ -198,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_board_init_vals() {
-        // test that init board contains correct values
+        // Test that init board contains correct values
         let board: [[char; SIZE]; SIZE];
         board = [[' ', ' ', ' '], 
                 [' ', ' ', ' '], 
