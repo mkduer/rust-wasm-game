@@ -2,6 +2,8 @@ use std::fmt;
 use rand::{thread_rng, Rng};
 
 const SIZE: usize = 3;
+const P1: char = 'X';
+const P2: char = 'O';
 
 #[derive(Debug, PartialEq, Clone)]
 struct AutoPlay {
@@ -12,8 +14,8 @@ struct AutoPlay {
 impl Default for AutoPlay {
     fn default() -> AutoPlay {
         // By default, both players are automated to play random, legal moves
-        AutoPlay{play_type: [true, true], 
-                 play_type_str: ["automatic".to_string(), "automatic".to_string()]}
+        AutoPlay{ play_type: [true, true], 
+                  play_type_str: ["automatic".to_string(), "automatic".to_string()]}
     }
 }
 
@@ -24,6 +26,19 @@ struct Coord {
     legal: bool,
 }
 
+#[derive(Debug, Clone)]
+struct WinState {
+    p1_win_state: [char; SIZE],
+    p2_win_state: [char; SIZE],
+}
+
+impl Default for WinState {
+    fn default() -> WinState {
+        // Generates winning state sized to default `SIZE`
+        WinState { p1_win_state: [P1; SIZE], p2_win_state: [P2; SIZE] }
+    }
+}
+
 struct Game {
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
@@ -31,6 +46,7 @@ struct Game {
     auto_play: AutoPlay,            // type of play for each player
     end_game: bool,                 // game status: False if in play, True if ended by win/draw
     coordinates: Vec<Coord>,        // coordinates for moves
+    win_states: WinState,           // win states for players
 }
 
 impl Game {
@@ -41,10 +57,11 @@ impl Game {
                     [' ', ' ', ' '], 
                     [' ', ' ', ' ']],
             curr_player: 0,
-            players: ['X', 'O'],
+            players: [P1, P2],
             auto_play: AutoPlay::default(), 
             end_game: false,
             coordinates: coord_mapping(),
+            win_states: WinState::default(),
         }
     }
 
@@ -126,24 +143,25 @@ impl Game {
     }
 
     fn is_endgame(&mut self) -> bool {
+        // Checks for end game win/draw states
+        println!("win states for players 1 and 2:");
+        for i in 0..SIZE {
+            println!("{}, {}", self.win_states.p1_win_state[i], self.win_states.p2_win_state[i]);
+        }
         // TODO: check for win/draw state (draw state only needs to be checked if the board is full)
         // TODO: print out the results and board if it is the end of the game, return true if end game
         true
     }
 
     fn reset(&mut self) {
-        // TODO: reset game
-        println!("reset game");
-        Self {
-            board: [[' ', ' ', ' '], 
-                    [' ', ' ', ' '], 
-                    [' ', ' ', ' ']],
-            curr_player: 0,
-            players: ['X', 'O'],
-            auto_play: self.auto_play.to_owned(),
-            end_game: false,
-            coordinates: self.coordinates.to_owned(),
-        };
+        // Reset Game
+        println!("RESET GAME: ");
+        self.board = [[' ', ' ', ' '], 
+                     [' ', ' ', ' '], 
+                     [' ', ' ', ' ']];
+        self.curr_player = 0;
+        self.end_game = false;
+        println!("{}", self);
     }
 }
 
@@ -163,7 +181,7 @@ impl fmt::Display for Game {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         //  Display game state (allows display with macros like println!)
         let mut game_status = format!("in play, {}'s turn", &self.players[self.curr_player]);
-        if self.end_game {
+        if self.end_game == true {
             game_status = "ended".to_string();
         }
 
@@ -190,7 +208,16 @@ fn main() {
         game.update();
         println!("{}", game);
     }
+
     game.reset();
+
+    game.start(false, false);
+    println!("{}", game);
+
+    while game.end_game == false {
+        game.update();
+        println!("{}", game);
+    }
 }
 
 
@@ -231,7 +258,6 @@ mod tests {
     use super::*;
 
     // TODO: test reset()
-    // TODO: test auto_move
     // TODO: test manual_move
     // TODO: test switch_player
     // TODO: test update()
