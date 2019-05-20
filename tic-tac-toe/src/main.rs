@@ -328,14 +328,56 @@ mod tests {
         // TODO
     }
     */
+    #[test]
+    fn test_is_win_false() {
+        // Tests that the function returns a `false` to signify a win has not occurred
+        // for various scenarios
+        let mut game = Game::new();
+
+        let mut test_row: Vec<char> = vec![P1, P2, P2];
+        let mut game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P1, P1, P2];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P1, P2];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![' ', P1, P1];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P1, ' ', P1];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P2, ' '];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+    }
 
     #[test]
-    fn test_is_win() {
-        // Tests that the function returns the correct boolean
+    fn test_is_win_true() {
+        // Tests that the function returns a `true` to signify a win has occurred
         let mut game = Game::new();
-        let test_row: Vec<char> = vec![P1, P1, P1];
-        let game_won = game.is_win(&test_row);
+
+        let mut test_row: Vec<char> = vec![P1, P1, P1];
+        let mut game_won = game.is_win(&test_row);
         assert_eq!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P2, P2];
+        game_won = game.is_win(&test_row);
+        assert_eq!(game_won, true);
+        test_row.clear();
     }
 
     #[test]
