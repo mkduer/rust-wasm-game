@@ -528,4 +528,14 @@ mod tests {
                       [' ', ' ', 'X']];
         assert_ne!(game.is_draw(), true);
     }
+
+    #[test]
+    fn test_switch_player() {
+        let mut game = Game::new();
+        game.curr_player = 0;
+        assert_eq!(game.switch_player(), 1);
+
+        game.curr_player = 1;
+        assert_eq!(game.switch_player(), 0);
+    }
 }
