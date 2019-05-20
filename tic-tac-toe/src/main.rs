@@ -6,7 +6,7 @@ const P1: char = 'X';
 const P2: char = 'O';
 const NOP: usize = 9;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq)]
 struct AutoPlay {
     play_type: [bool; 2],           // True: automatic random moves, False: manual moves
     play_type_str: [String; 2],     // "automatic" or "manual"
@@ -20,14 +20,14 @@ impl Default for AutoPlay {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq)]
 struct Coord {
     x: usize,
     y: usize,
     legal: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq)]
 struct WinState {
     p1_win_state: Vec<char>,
     p2_win_state: Vec<char>,
@@ -45,6 +45,7 @@ impl Default for WinState {
     }
 }
 
+#[derive(Debug, PartialEq)]
 struct Game {
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
@@ -218,14 +219,14 @@ impl Game {
 
     fn reset(&mut self) {
         // Reset Game
-        println!("RESET GAME: ");
         self.board = [[' ', ' ', ' '], 
                      [' ', ' ', ' '], 
                      [' ', ' ', ' ']];
         self.curr_player = 0;
         self.end_game = false;
+        self.coordinates.clear();
+        self.coordinates = coord_mapping();
         self.winner = NOP;
-        println!("{}", self);
     }
 }
 
@@ -316,6 +317,24 @@ mod integration_tests {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_reset() {
+        // Tests if the game resets correctly to its original values after being played
+        // by comparing with another unplayed game instantiated with the same initial values
+        let mut original_game = Game::new();
+        original_game.start(true, true);
+
+        while original_game.end_game == false {
+            original_game.update();
+            println!("{}", original_game);
+        }
+        original_game.reset();
+
+        let mut comparison_game = Game::new();
+        comparison_game.start(true, true);
+        assert_eq!(original_game, comparison_game);
+    }
 
     #[test]
     fn test_no_win_state() {
