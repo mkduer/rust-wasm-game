@@ -188,22 +188,22 @@ impl Game {
 
     fn is_draw(&mut self) -> bool {
         // Checks for drawn states and returns True if a drawn state is reached, False otherwise
-        let mut continue_game = true;
+        let mut is_drawn = true;
         for row in self.board.iter() {
-            continue_game = match row {
-                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => true,
+            is_drawn = match row {
+                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
                 _ => {
                     println!("row = {:?}", row);  // TODO: get rid of this print
-                    false 
+                    true 
                 }
             };
-            if continue_game == false {
+            if is_drawn == false {
                 println!("GAME not DRAWN!");  // TODO: get rid of this print
                 return false;
             }
         }
         println!("GAME WAS DRAWN!");    // TODO: create display for drawn state and test it
-        continue_game
+        is_drawn
     }
 
     fn is_win(&mut self, row: &Vec<char>) -> bool {
@@ -323,7 +323,6 @@ mod integration_tests {
 /***********
  UNIT TESTS
 ************/
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -386,33 +385,27 @@ mod tests {
         let mut game = Game::new();
 
         let mut test_row: Vec<char> = vec![P1, P2, P2];
-        let mut game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![P1, P1, P2];
-        game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![P2, P1, P2];
-        game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![' ', P1, P1];
-        game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![P1, ' ', P1];
-        game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![P2, P2, ' '];
-        game_won = game.is_win(&test_row);
-        assert_ne!(game_won, true);
+        assert_ne!(game.is_win(&test_row), true);
     }
 
     #[test]
@@ -421,13 +414,11 @@ mod tests {
         let mut game = Game::new();
 
         let mut test_row: Vec<char> = vec![P1, P1, P1];
-        let mut game_won = game.is_win(&test_row);
-        assert_eq!(game_won, true);
+        assert_eq!(game.is_win(&test_row), true);
         test_row.clear();
 
         test_row = vec![P2, P2, P2];
-        game_won = game.is_win(&test_row);
-        assert_eq!(game_won, true);
+        assert_eq!(game.is_win(&test_row), true);
         test_row.clear();
     }
 
@@ -483,7 +474,6 @@ mod tests {
         assert_eq!(game.players[game.winner], P2);
     }
 
-
     #[test]
     fn test_reset() {
         // Tests if the game resets correctly to its original values after being played
@@ -502,4 +492,40 @@ mod tests {
         assert_eq!(original_game, comparison_game);
     }
 
+    #[test]
+    fn test_is_draw_true() {
+        // Tests that the function returns a `true` to signify a draw has occurred
+        let mut game = Game::new();
+
+        game.board = [['O', 'X', 'O'],
+                      ['O', 'X', 'X'],
+                      ['X', 'O', 'O']];
+        assert_eq!(game.is_draw(), true);
+
+        game.board = [['X', 'X', 'O'],
+                      ['O', 'O', 'X'],
+                      ['X', 'X', 'O']];
+        assert_eq!(game.is_draw(), true);
+    }
+
+    #[test]
+    fn test_is_draw_false() {
+        // Tests that the function returns a `true` to signify a draw has occurred
+        let mut game = Game::new();
+
+        game.board = [['X', 'O', 'O'],
+                      ['O', 'X', ' '],
+                      ['X', 'O', ' ']];
+        assert_ne!(game.is_draw(), true);
+
+        game.board = [[' ', ' ', ' '],
+                      [' ', ' ', ' '],
+                      [' ', ' ', ' ']];
+        assert_ne!(game.is_draw(), true);
+
+        game.board = [['O', 'X', 'X'],
+                      ['O', 'X', 'O'],
+                      [' ', ' ', 'X']];
+        assert_ne!(game.is_draw(), true);
+    }
 }
