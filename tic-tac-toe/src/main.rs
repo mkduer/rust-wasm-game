@@ -2,6 +2,8 @@ use std::fmt;
 use rand::{thread_rng, Rng};
 
 const SIZE: usize = 3;
+const P1: char = 'X';
+const P2: char = 'O';
 
 #[derive(Debug, PartialEq, Clone)]
 struct AutoPlay {
@@ -12,8 +14,8 @@ struct AutoPlay {
 impl Default for AutoPlay {
     fn default() -> AutoPlay {
         // By default, both players are automated to play random, legal moves
-        AutoPlay{play_type: [true, true], 
-                 play_type_str: ["automatic".to_string(), "automatic".to_string()]}
+        AutoPlay{ play_type: [true, true], 
+                  play_type_str: ["automatic".to_string(), "automatic".to_string()]}
     }
 }
 
@@ -24,6 +26,24 @@ struct Coord {
     legal: bool,
 }
 
+#[derive(Debug, Clone)]
+struct WinState {
+    p1_win_state: Vec<char>,
+    p2_win_state: Vec<char>,
+}
+
+impl Default for WinState {
+    fn default() -> WinState {
+        // Generates winning state sized to default `SIZE`
+        let mut win_state = WinState { p1_win_state: vec![], p2_win_state: vec![] };
+        for _i in 0..SIZE {
+            win_state.p1_win_state.push(P1);
+            win_state.p2_win_state.push(P2);
+        }
+        win_state
+    }
+}
+
 struct Game {
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
@@ -31,6 +51,7 @@ struct Game {
     auto_play: AutoPlay,            // type of play for each player
     end_game: bool,                 // game status: False if in play, True if ended by win/draw
     coordinates: Vec<Coord>,        // coordinates for moves
+    win_states: WinState,           // win states for players
 }
 
 impl Game {
@@ -41,10 +62,11 @@ impl Game {
                     [' ', ' ', ' '], 
                     [' ', ' ', ' ']],
             curr_player: 0,
-            players: ['X', 'O'],
+            players: [P1, P2],
             auto_play: AutoPlay::default(), 
             end_game: false,
             coordinates: coord_mapping(),
+            win_states: WinState::default(),
         }
     }
 
@@ -126,24 +148,80 @@ impl Game {
     }
 
     fn is_endgame(&mut self) -> bool {
-        // TODO: check for win/draw state (draw state only needs to be checked if the board is full)
-        // TODO: print out the results and board if it is the end of the game, return true if end game
-        true
+        // Checks for end game win/draw states
+        let total_states = SIZE + SIZE + 2;
+        let slices = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+                      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                      [0, 4, 8], [2, 4, 6]];
+        let mut board_slice: Vec<char> = vec![];
+
+        // Pass list of arrays as rows and loop over them to check for win state
+        for slice in 0..total_states {
+            // e.g. [0, 1, 2]
+            println!("SLICE = {}", slice);
+            let state = &slices[slice];
+
+            for index in 0..SIZE {
+                // e.g. 0
+                let loc = state[index];
+                let x = self.coordinates[loc].x;
+                let y = self.coordinates[loc].y;
+                board_slice.push(self.board[x][y])
+            }
+            if self.is_win(&board_slice) == true {
+                board_slice.clear();
+                return true;
+            }
+            board_slice.clear();
+        }
+
+        // if board is full, check for drawn state
+        self.is_draw()
+    }
+
+    fn is_draw(&mut self) -> bool {
+        let mut game_over = true;
+        for row in self.board.iter() {
+            game_over = match row {
+                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
+                _ => {
+                    println!("row = {:?}", row); 
+                    true
+                }
+            };
+            if game_over == false {
+                println!("GAME not DRAWN!");
+                return false;
+            }
+        }
+        println!("GAME WAS DRAWN!");
+        game_over
+    }
+
+    fn is_win(&mut self, row: &Vec<char>) -> bool {
+        println!("BOARD SLICE: {:?}", row);
+
+        if row == &self.win_states.p1_win_state {
+            println!("player 1 WON the game!");
+            return true;
+        }
+        if row == &self.win_states.p2_win_state {
+            println!("player 2 WON the game!");
+            return true;
+        }
+        println!("No player won the game yet");
+        false
     }
 
     fn reset(&mut self) {
-        // TODO: reset game
-        println!("reset game");
-        Self {
-            board: [[' ', ' ', ' '], 
-                    [' ', ' ', ' '], 
-                    [' ', ' ', ' ']],
-            curr_player: 0,
-            players: ['X', 'O'],
-            auto_play: self.auto_play.to_owned(),
-            end_game: false,
-            coordinates: self.coordinates.to_owned(),
-        };
+        // Reset Game
+        println!("RESET GAME: ");
+        self.board = [[' ', ' ', ' '], 
+                     [' ', ' ', ' '], 
+                     [' ', ' ', ' ']];
+        self.curr_player = 0;
+        self.end_game = false;
+        println!("{}", self);
     }
 }
 
@@ -163,7 +241,7 @@ impl fmt::Display for Game {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         //  Display game state (allows display with macros like println!)
         let mut game_status = format!("in play, {}'s turn", &self.players[self.curr_player]);
-        if self.end_game {
+        if self.end_game == true {
             game_status = "ended".to_string();
         }
 
@@ -231,7 +309,6 @@ mod tests {
     use super::*;
 
     // TODO: test reset()
-    // TODO: test auto_move
     // TODO: test manual_move
     // TODO: test switch_player
     // TODO: test update()
