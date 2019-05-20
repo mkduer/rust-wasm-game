@@ -329,48 +329,54 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_reset() {
-        // Tests if the game resets correctly to its original values after being played
-        // by comparing with another unplayed game instantiated with the same initial values
-        let mut original_game = Game::new();
-        original_game.start(true, true);
+    fn test_board_init_vals() {
+        // Test that init board contains correct values
+        let board: [[char; SIZE]; SIZE];
+        board = [[' ', ' ', ' '], 
+                [' ', ' ', ' '], 
+                [' ', ' ', ' ']];
+        let game = Game::new();
+        assert_eq!(board, game.board);
+    }
 
-        while original_game.end_game == false {
-            original_game.update();
-            println!("{}", original_game);
+    #[test]
+    fn test_start() {
+        // Test that players are set with correct autoplay booleans
+        let mut game = Game::new();
+        game.start(true, true);
+        assert_eq!(AutoPlay { play_type: [true, true], 
+                              play_type_str: ["automatic".to_string(), "automatic".to_string()] }, 
+                              game.auto_play);
+        game.start(false, true);
+        assert_eq!(AutoPlay { play_type: [false, true], 
+                              play_type_str: ["manual".to_string(), "automatic".to_string()] }, 
+                              game.auto_play);
+        game.start(true, false);
+        assert_eq!(AutoPlay { play_type: [true, false], 
+                              play_type_str: ["automatic".to_string(), "manual".to_string()] }, 
+                              game.auto_play);
+        game.start(false, false);
+        assert_eq!(AutoPlay { play_type: [false, false], 
+                              play_type_str: ["manual".to_string(), "manual".to_string()] }, 
+                              game.auto_play);
+    }
+
+    #[test]
+    fn test_game_display() {
+        // Test that init board displays correctly
+        let mut game = Game::new();
+        game.start(true, true);
+
+        let mut game_status = format!("Game in play, {}'s turn", &game.players[game.curr_player]);
+        if game.end_game {
+            game_status = "Game ended".to_string();
         }
-        original_game.reset();
-
-        let mut comparison_game = Game::new();
-        comparison_game.start(true, true);
-        assert_eq!(original_game, comparison_game);
-    }
-
-    #[test]
-    fn test_no_win_state() {
-        // Test for correct default value when there is no winner
-        let mut game = Game::new();
-        let test_row: Vec<char> = vec![' ', P1, ' '];
-        let _game_won = game.is_win(&test_row);
-        assert_eq!(game.winner, NOP);
-    }
-
-    #[test]
-    fn test_p2_win_state() {
-        // Test for correct winner when P2 wins
-        let mut game = Game::new();
-        let test_row: Vec<char> = vec![P2, P2, P2];
-        let _game_won = game.is_win(&test_row);
-        assert_eq!(game.players[game.winner], P2);
-    }
-
-    #[test]
-    fn test_p1_win_state() {
-        // Test for correct winner when P1 wins
-        let mut game = Game::new();
-        let test_row: Vec<char> = vec![P1, P1, P1];
-        let _game_won = game.is_win(&test_row);
-        assert_eq!(game.players[game.winner], P1);
+        let mut expect_board = format!("\nPlayer 1 ({})\nPlayer 2 ({})\n{}:", 
+                                       &game.auto_play.play_type[0], 
+                                       &game.auto_play.play_type[1], 
+                                       &game_status);
+        expect_board += "\n    |   |  \n -----------\n    |   |  \n -----------\n    |   |  \n";
+        assert_eq!(expect_board, format!("{}", game));
     }
 
     #[test]
@@ -426,53 +432,74 @@ mod tests {
     }
 
     #[test]
-    fn test_player_init_settings() {
-        // Test that players are set with correct autoplay booleans
+    fn test_no_win_state() {
+        // Test for correct default value when there is no winner
         let mut game = Game::new();
-        game.start(true, true);
-        assert_eq!(AutoPlay { play_type: [true, true], 
-                              play_type_str: ["automatic".to_string(), "automatic".to_string()] }, 
-                              game.auto_play);
-        game.start(false, true);
-        assert_eq!(AutoPlay { play_type: [false, true], 
-                              play_type_str: ["manual".to_string(), "automatic".to_string()] }, 
-                              game.auto_play);
-        game.start(true, false);
-        assert_eq!(AutoPlay { play_type: [true, false], 
-                              play_type_str: ["automatic".to_string(), "manual".to_string()] }, 
-                              game.auto_play);
-        game.start(false, false);
-        assert_eq!(AutoPlay { play_type: [false, false], 
-                              play_type_str: ["manual".to_string(), "manual".to_string()] }, 
-                              game.auto_play);
+        let test_row: Vec<char> = vec![' ', P1, ' '];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.winner, NOP);
     }
 
     #[test]
-    fn test_board_init_display() {
-        // Test that init board displays correctly
+    fn test_p2_win_state() {
+        // Test for correct winner when P2 wins
         let mut game = Game::new();
-        game.start(true, true);
+        let test_row: Vec<char> = vec![P2, P2, P2];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P2);
+    }
 
-        let mut game_status = format!("Game in play, {}'s turn", &game.players[game.curr_player]);
-        if game.end_game {
-            game_status = "Game ended".to_string();
+    #[test]
+    fn test_p1_win_state() {
+        // Test for correct winner when P1 wins
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P1, P1, P1];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P1);
+    }
+
+
+    #[test]
+    fn test_declare_p1_winner() {
+        // Test that the correct winner was declared 
+        // by testing the printed variable's value (left-hand assert_eq param)
+        // with the expected value (right-hand assert_eq param)
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P1, P1, P1];
+        let _game_won = game.is_win(&test_row);
+        game.declare_winner();
+        assert_eq!(game.players[game.winner], P1);
+    }
+
+    #[test]
+    fn test_declare_p2_winner() {
+        // Test that the correct winner was declared 
+        // by testing the printed variable's value (left-hand assert_eq param)
+        // with the expected value (right-hand assert_eq param)
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P2, P2, P2];
+        let _game_won = game.is_win(&test_row);
+        game.declare_winner();
+        assert_eq!(game.players[game.winner], P2);
+    }
+
+
+    #[test]
+    fn test_reset() {
+        // Tests if the game resets correctly to its original values after being played
+        // by comparing with another unplayed game instantiated with the same initial values
+        let mut original_game = Game::new();
+        original_game.start(true, true);
+
+        while original_game.end_game == false {
+            original_game.update();
+            println!("{}", original_game);
         }
-        let mut expect_board = format!("\nPlayer 1 ({})\nPlayer 2 ({})\n{}:", 
-                                       &game.auto_play.play_type[0], 
-                                       &game.auto_play.play_type[1], 
-                                       &game_status);
-        expect_board += "\n    |   |  \n -----------\n    |   |  \n -----------\n    |   |  \n";
-        assert_eq!(expect_board, format!("{}", game));
+        original_game.reset();
+
+        let mut comparison_game = Game::new();
+        comparison_game.start(true, true);
+        assert_eq!(original_game, comparison_game);
     }
 
-    #[test]
-    fn test_board_init_vals() {
-        // Test that init board contains correct values
-        let board: [[char; SIZE]; SIZE];
-        board = [[' ', ' ', ' '], 
-                [' ', ' ', ' '], 
-                [' ', ' ', ' ']];
-        let game = Game::new();
-        assert_eq!(board, game.board);
-    }
 }
