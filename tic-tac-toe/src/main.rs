@@ -8,6 +8,7 @@ const NOP: usize = 9;
 
 #[derive(Debug, PartialEq)]
 struct AutoPlay {
+    // Struct detailing whether players move automatically or manually
     play_type: [bool; 2],           // True: automatic random moves, False: manual moves
     play_type_str: [String; 2],     // "automatic" or "manual"
 }
@@ -22,15 +23,16 @@ impl Default for AutoPlay {
 
 #[derive(Debug, PartialEq)]
 struct Coord {
-    x: usize,
-    y: usize,
-    legal: bool,
+    // Coordinate struct for mapping array indices to coordinates and
+    x: usize,       // x-coordinate
+    y: usize,       // y-coordinate
+    legal: bool,    // flag: True if it is legal to place a piece on the coordinate, False if coordinate is already full
 }
 
 #[derive(Debug, PartialEq)]
 struct WinState {
-    p1_win_state: Vec<char>,
-    p2_win_state: Vec<char>,
+    p1_win_state: Vec<char>,    // represents player 1's win state
+    p2_win_state: Vec<char>,    // represents player 2's win state
 }
 
 impl Default for WinState {
@@ -123,7 +125,7 @@ impl Game {
     }
 
     fn auto_move(&mut self) -> usize {
-        // Return the location (index) for a random, legal move
+        // Automated Move: Return the location (index) for a random, legal move
         let max_rng = SIZE * SIZE;
         let mut rng = thread_rng();
         let mut loc = rng.gen_range(0, max_rng);
@@ -138,6 +140,7 @@ impl Game {
     }
 
     fn manual_move(&mut self) -> usize {
+        // Manual Move: Ask the user for the location where they want to place their piece
         println!("make a manual move");
         let max_rng: usize = SIZE * SIZE;
         // TODO: ask player for legal move
@@ -184,37 +187,44 @@ impl Game {
     }
 
     fn is_draw(&mut self) -> bool {
-        let mut game_over = true;
+        // Checks for drawn states and returns True if a drawn state is reached, False otherwise
+        let mut continue_game = true;
         for row in self.board.iter() {
-            game_over = match row {
-                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
+            continue_game = match row {
+                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => true,
                 _ => {
                     println!("row = {:?}", row);  // TODO: get rid of this print
-                    true
+                    false 
                 }
             };
-            if game_over == false {
+            if continue_game == false {
                 println!("GAME not DRAWN!");  // TODO: get rid of this print
                 return false;
             }
         }
         println!("GAME WAS DRAWN!");    // TODO: create display for drawn state and test it
-        game_over
+        continue_game
     }
 
     fn is_win(&mut self, row: &Vec<char>) -> bool {
+        // Checks for win states and returns True if a win state is reached, False otherwise
         if row == &self.win_states.p1_win_state {
-            println!("player 1 WON the game!");  // TODO: create display for win state and test it
             self.winner = 0;
+            self.declare_winner();
             return true;
         }
         if row == &self.win_states.p2_win_state {
-            println!("player 2 WON the game!");  // TODO: create display for win state and test it
             self.winner = 1;
+            self.declare_winner();
             return true;
         }
         println!("No player won the game yet");  // TODO: get rid of this print
         false
+    }
+
+    fn declare_winner(&mut self) {
+        // Declares a winner
+        println!("Player {} WON the game!", self.players[self.winner]);
     }
 
     fn reset(&mut self) {
