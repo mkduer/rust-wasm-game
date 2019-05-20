@@ -4,6 +4,7 @@ use rand::{thread_rng, Rng};
 const SIZE: usize = 3;
 const P1: char = 'X';
 const P2: char = 'O';
+const NOP: usize = 9;
 
 #[derive(Debug, PartialEq, Clone)]
 struct AutoPlay {
@@ -52,6 +53,7 @@ struct Game {
     end_game: bool,                 // game status: False if in play, True if ended by win/draw
     coordinates: Vec<Coord>,        // coordinates for moves
     win_states: WinState,           // win states for players
+    winner: usize,                  // specifies winner if there is one
 }
 
 impl Game {
@@ -67,6 +69,7 @@ impl Game {
             end_game: false,
             coordinates: coord_mapping(),
             win_states: WinState::default(),
+            winner: NOP,
         }
     }
 
@@ -185,31 +188,31 @@ impl Game {
             game_over = match row {
                 [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
                 _ => {
-                    println!("row = {:?}", row); 
+                    println!("row = {:?}", row);  // TODO: get rid of this print
                     true
                 }
             };
             if game_over == false {
-                println!("GAME not DRAWN!");
+                println!("GAME not DRAWN!");  // TODO: get rid of this print
                 return false;
             }
         }
-        println!("GAME WAS DRAWN!");
+        println!("GAME WAS DRAWN!");    // TODO: create display for drawn state and test it
         game_over
     }
 
     fn is_win(&mut self, row: &Vec<char>) -> bool {
-        println!("BOARD SLICE: {:?}", row);
-
         if row == &self.win_states.p1_win_state {
-            println!("player 1 WON the game!");
+            println!("player 1 WON the game!");  // TODO: create display for win state and test it
+            self.winner = 0;
             return true;
         }
         if row == &self.win_states.p2_win_state {
-            println!("player 2 WON the game!");
+            println!("player 2 WON the game!");  // TODO: create display for win state and test it
+            self.winner = 1;
             return true;
         }
-        println!("No player won the game yet");
+        println!("No player won the game yet");  // TODO: get rid of this print
         false
     }
 
@@ -221,6 +224,7 @@ impl Game {
                      [' ', ' ', ' ']];
         self.curr_player = 0;
         self.end_game = false;
+        self.winner = NOP;
         println!("{}", self);
     }
 }
@@ -284,17 +288,22 @@ mod integration_tests {
 
     #[test]
     fn test_auto_move_reaches_endgame() {
-        // Should result in an endgame within `Game::const SIZE` moves, 
-        // otherwise, there is a halting error
-        let mut max_moves = SIZE as isize;
+        // Should result in an endgame within Game const `SIZE * SIZE` moves, 
+        // otherwise, there is a halting error, which is caught by the while loop's
+        // `max_moves > -2` stopping condition. If this stopping condition is used
+        // the assert will fail.
+        let mut max_moves = (SIZE * SIZE) as isize;
         let mut game = Game::new();
 
         game.start(true, true);
 
         while (game.end_game == false) && (max_moves > -2) {
+            println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
             game.update();
             max_moves -= 1;
         }
+        println!("exited while loop");
+        println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
         assert_ge!(max_moves, 0)
     }
 }
@@ -308,11 +317,84 @@ mod integration_tests {
 mod tests {
     use super::*;
 
-    // TODO: test reset()
-    // TODO: test manual_move
-    // TODO: test switch_player
-    // TODO: test update()
+    #[test]
+    fn test_no_win_state() {
+        // Test for correct default value when there is no winner
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![' ', P1, ' '];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.winner, NOP);
+    }
 
+    #[test]
+    fn test_p2_win_state() {
+        // Test for correct winner when P2 wins
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P2, P2, P2];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P2);
+    }
+
+    #[test]
+    fn test_p1_win_state() {
+        // Test for correct winner when P1 wins
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P1, P1, P1];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P1);
+    }
+
+    #[test]
+    fn test_is_win_false() {
+        // Tests that the function returns a `false` to signify a win has not occurred
+        // for various scenarios
+        let mut game = Game::new();
+
+        let mut test_row: Vec<char> = vec![P1, P2, P2];
+        let mut game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P1, P1, P2];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P1, P2];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![' ', P1, P1];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P1, ' ', P1];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P2, ' '];
+        game_won = game.is_win(&test_row);
+        assert_ne!(game_won, true);
+    }
+
+    #[test]
+    fn test_is_win_true() {
+        // Tests that the function returns a `true` to signify a win has occurred
+        let mut game = Game::new();
+
+        let mut test_row: Vec<char> = vec![P1, P1, P1];
+        let mut game_won = game.is_win(&test_row);
+        assert_eq!(game_won, true);
+        test_row.clear();
+
+        test_row = vec![P2, P2, P2];
+        game_won = game.is_win(&test_row);
+        assert_eq!(game_won, true);
+        test_row.clear();
+    }
 
     #[test]
     fn test_player_init_settings() {
