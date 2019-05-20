@@ -155,7 +155,7 @@ impl Game {
     }
 
     fn is_endgame(&mut self) -> bool {
-        // Checks for end game win/draw states
+        // Checks for end game win/draw states returning True if an endgame is reached, False otherwise
         let total_states = SIZE + SIZE + 2;
         let slices = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
                       [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -531,11 +531,41 @@ mod tests {
 
     #[test]
     fn test_switch_player() {
+        // Tests that players are switched correctly
         let mut game = Game::new();
         game.curr_player = 0;
         assert_eq!(game.switch_player(), 1);
 
         game.curr_player = 1;
         assert_eq!(game.switch_player(), 0);
+    }
+
+    #[test]
+    fn test_end_game_true() {
+        // Tests that is_endgame returns True if a win/drawn state is reached
+        let mut game = Game::new();
+
+        // drawn end game
+        game.board = [['X', 'O', 'O'],
+                      ['O', 'X', 'O'],
+                      ['X', 'O', 'X']];
+        assert_eq!(game.is_endgame(), true);
+
+        // won end game
+        game.board = [['X', 'O', 'O'],
+                      ['O', 'X', 'O'],
+                      ['X', 'X', 'X']];
+        assert_eq!(game.is_endgame(), true);
+    }
+
+    #[test]
+    fn test_end_game_false() {
+        // Tests that is_endgame returns False if the board is incomplete with no win
+        let mut game = Game::new();
+
+        game.board = [['O', ' ', 'O'],
+                      ['O', 'X', 'O'],
+                      ['X', 'O', 'X']];
+        assert_eq!(game.is_endgame(), false);
     }
 }
