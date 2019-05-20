@@ -6,7 +6,7 @@ const P1: char = 'X';
 const P2: char = 'O';
 const NOP: usize = 9;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq)]
 struct AutoPlay {
     play_type: [bool; 2],           // True: automatic random moves, False: manual moves
     play_type_str: [String; 2],     // "automatic" or "manual"
@@ -27,7 +27,7 @@ struct Coord {
     legal: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq)]
 struct WinState {
     p1_win_state: Vec<char>,
     p2_win_state: Vec<char>,
