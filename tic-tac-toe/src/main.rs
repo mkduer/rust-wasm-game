@@ -4,6 +4,7 @@ use rand::{thread_rng, Rng};
 const SIZE: usize = 3;
 const P1: char = 'X';
 const P2: char = 'O';
+const NOP: usize = 9;
 
 #[derive(Debug, PartialEq, Clone)]
 struct AutoPlay {
@@ -52,7 +53,7 @@ struct Game {
     end_game: bool,                 // game status: False if in play, True if ended by win/draw
     coordinates: Vec<Coord>,        // coordinates for moves
     win_states: WinState,           // win states for players
-    winner: isize,                  // specifies winner if there is one
+    winner: usize,                  // specifies winner if there is one
 }
 
 impl Game {
@@ -68,7 +69,7 @@ impl Game {
             end_game: false,
             coordinates: coord_mapping(),
             win_states: WinState::default(),
-            winner: -1,
+            winner: NOP,
         }
     }
 
@@ -187,7 +188,7 @@ impl Game {
             game_over = match row {
                 [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
                 _ => {
-                    println!("row = {:?}", row); 
+                    println!("row = {:?}", row);  // TODO: get rid of this print
                     true
                 }
             };
@@ -223,7 +224,7 @@ impl Game {
                      [' ', ' ', ' ']];
         self.curr_player = 0;
         self.end_game = false;
-        self.winner = -1;
+        self.winner = NOP;
         println!("{}", self);
     }
 }
@@ -316,18 +317,33 @@ mod integration_tests {
 mod tests {
     use super::*;
 
-    // TODO: test reset()
-    // TODO: test manual_move
-    // TODO: test switch_player
-    // TODO: test update()
-    // TODO: test endgame
-
-/*
     #[test]
-    fn test_win_states() {
-        // TODO
+    fn test_no_win_state() {
+        // Test for correct default value when there is no winner
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![' ', P1, ' '];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.winner, NOP);
     }
-    */
+
+    #[test]
+    fn test_p2_win_state() {
+        // Test for correct winner when P2 wins
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P2, P2, P2];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P2);
+    }
+
+    #[test]
+    fn test_p1_win_state() {
+        // Test for correct winner when P1 wins
+        let mut game = Game::new();
+        let test_row: Vec<char> = vec![P1, P1, P1];
+        let _game_won = game.is_win(&test_row);
+        assert_eq!(game.players[game.winner], P1);
+    }
+
     #[test]
     fn test_is_win_false() {
         // Tests that the function returns a `false` to signify a win has not occurred
