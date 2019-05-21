@@ -149,8 +149,23 @@ impl Game {
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
         println!("\nWhere do you want to place your piece? ");
+        self.display_indexed_board();
 
-        // Display location indices
+        // Get user's choice for piece placement
+        let mut loc = self.get_user_input();
+        let mut valid: bool = self.coordinates[loc].legal;
+
+        // Make sure the move is valid
+        while valid == false {
+            println!("\nA piece is already placed there. Please enter a valid location: ");
+            loc = self.get_user_input();
+            valid = self.coordinates[loc].legal;
+        }
+        loc
+    }
+
+    fn display_indexed_board(&mut self) {
+        // Displays board with index repreesentations for placing pieces
         let example_board = [['0', '1', '2'], 
                              ['3', '4', '5'], 
                              ['6', '7', '8']];
@@ -164,18 +179,6 @@ impl Game {
             }
         }
         println!("\n");
-
-        // Get user's choice for piece placement
-        let mut loc = self.get_user_input();
-        let mut valid: bool = self.coordinates[loc].legal;
-
-        // Make sure the move is valid
-        while valid == false {
-            println!("\nA piece is already placed there. Please enter a valid location: ");
-            loc = self.get_user_input();
-            valid = self.coordinates[loc].legal;
-        }
-        loc
     }
 
     fn get_user_input(&mut self) -> usize {
