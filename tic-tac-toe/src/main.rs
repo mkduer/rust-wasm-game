@@ -87,15 +87,23 @@ impl Game {
         match self.auto_play {
             AutoPlay { play_type: [false, false], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "manual".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [true, false], .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "manual".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [false, true], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "automatic".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "automatic".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
         }
     }
@@ -302,7 +310,6 @@ impl fmt::Display for Game {
         }
 
         let mut total_lines = &SIZE - 1;
-        write!(formatter, "\nPlayer 1 ({}), Player 2 ({})", &self.auto_play.play_type_str[0], &self.auto_play.play_type_str[1]);
         write!(formatter, "\nGame {}:\n", &game_status);
         for row in &self.board {
             write!(formatter, "  {} | {} | {}\n", row[0], row[1], row[2]);
@@ -411,10 +418,7 @@ mod tests {
         if game.end_game {
             game_status = "Game ended".to_string();
         }
-        let mut expect_board = format!("\nPlayer 1 ({})\nPlayer 2 ({})\n{}:", 
-                                       &game.auto_play.play_type[0], 
-                                       &game.auto_play.play_type[1], 
-                                       &game_status);
+        let mut expect_board = format!("\n{}:", &game_status);
         expect_board += "\n    |   |  \n -----------\n    |   |  \n -----------\n    |   |  \n";
         assert_eq!(expect_board, format!("{}", game));
     }
