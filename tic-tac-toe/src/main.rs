@@ -6,6 +6,10 @@ const P1: char = 'X';       // player 1's piece
 const P2: char = 'O';       // player 2's piece
 const SIZE: usize = 3;      // row/col sizes for board
 const NO_WIN: usize = 9;    // default, invalid value to represent no winner
+const BOARD_IDX: [[char; 3]; 3] = [['0', '1', '2'],     // indexed board for user's reference
+                                   ['3', '4', '5'], 
+                                   ['6', '7', '8']];
+
 
 #[derive(Debug, PartialEq)]
 struct AutoPlay {
@@ -166,12 +170,8 @@ impl Game {
 
     fn display_indexed_board(&mut self) {
         // Displays board with index repreesentations for placing pieces
-        let example_board = [['0', '1', '2'], 
-                             ['3', '4', '5'], 
-                             ['6', '7', '8']];
-
         let mut total_lines = &SIZE - 1;
-        for row in &example_board {
+        for row in &BOARD_IDX {
             println!("  {} | {} | {}", row[0], row[1], row[2]);
             if total_lines > 0 {
                 println!(" -----------");
@@ -183,14 +183,16 @@ impl Game {
 
     fn get_user_input(&mut self) -> usize {
         // Grabs the user's move from stdin and checks for validity
-        let _clean = match stdout().flush() {
+        let mut stdout = stdout();
+        let stdin = stdin();
+        let _clean = match stdout.flush() {
             Ok(result) => result,
             Err(error) => panic!("Unable to flush buffer, {}", error),
         };
 
         // Grab user's response
-        let mut user_response = String::new();
-        stdin().read_line(&mut user_response).unwrap();
+        let mut user_response = String::with_capacity(100);
+        stdin.read_line(&mut user_response).unwrap();
 
         // Check that the input was a valid character
         let mut first_char = user_response.chars().next().unwrap();
@@ -271,7 +273,7 @@ impl Game {
 
     fn declare_winner(&mut self) {
         // Declares a winner
-        println!("Player {} WON the game!", self.players[self.winner]);
+        println!("\nWINNER: Player {} won the game!", self.players[self.winner]);
     }
 
     fn reset(&mut self) {
