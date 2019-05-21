@@ -1,5 +1,6 @@
 use std::fmt;
 use rand::{thread_rng, Rng};
+use std::io::{stdin, stdout, Write};
 
 const SIZE: usize = 3;
 const P1: char = 'X';
@@ -99,9 +100,8 @@ impl Game {
 
     fn update(&mut self) { 
         // Have the current player choose a location for their move 
-        println!("implement update()"); 
         let loc: usize;
-        if self.auto_play.play_type[self.curr_player] {
+        if self.auto_play.play_type[self.curr_player] == true {
             loc = self.auto_move();
         } else {
             loc = self.manual_move();
@@ -112,8 +112,6 @@ impl Game {
         let y = self.coordinates[loc].y;
         self.board[x][y] = self.players[self.curr_player];
         self.coordinates[loc].legal = false;
-
-        println!("loc: {}, coordinates: {:?}", loc, self.coordinates[loc]);
 
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
@@ -141,17 +139,52 @@ impl Game {
 
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        println!("make a manual move");
-        let max_rng: usize = SIZE * SIZE;
-        // TODO: ask player for legal move
-        // TODO: check if it's legal    
-        // TODO: repeat until valid move
-        // TODO: return valid Coord
-        /*
-        let mut loc: usize;
+        println!("{}", self);
+        println!("\nWhere do you want to place your piece? ");
+        let example_board = [['0', '1', '2'], 
+                             ['3', '4', '5'], 
+                             ['6', '7', '8']];
+
+        let mut total_lines = &SIZE - 1;
+        for row in &example_board {
+            println!("  {} | {} | {}", row[0], row[1], row[2]);
+            if total_lines > 0 {
+                println!(" -----------");
+                total_lines -= 1;
+            }
+        }
+        let mut user_move = self.get_user_input();
+        let mut loc = user_move.to_digit(10).unwrap() as usize;
+        let mut valid: bool = self.coordinates[loc].legal;
+
+        while valid == false {
+            println!("\nA piece is already placed there. Please enter a valid location: ");
+            user_move = self.get_user_input();
+            loc = user_move.to_digit(10).unwrap() as usize;
+            valid = self.coordinates[loc].legal;
+        }
         loc
-        */
-        0
+    }
+
+    fn get_user_input(&mut self) -> char {
+        // Grabs the user's move from stdin and checks for validity
+        let _clean = match stdout().flush() {
+            Ok(result) => result,
+            Err(error) => panic!("Unable to flush buffer, {}", error),
+        };
+        let mut user_response = String::new();
+        stdin().read_line(&mut user_response).unwrap();
+
+        let mut first_char = user_response.chars().next().unwrap();
+        let mut loc = match &mut first_char {
+            '0' ... '8' => first_char,
+            _ => { 
+                println!("\nPlease enter a valid response: ");
+                self.get_user_input()
+            },
+        };
+        println!("You entered: {}", loc);
+        loc
     }
 
     fn is_endgame(&mut self) -> bool {
@@ -165,7 +198,6 @@ impl Game {
         // Pass list of arrays as rows and loop over them to check for win state
         for slice in 0..total_states {
             // e.g. [0, 1, 2]
-            println!("SLICE = {}", slice);
             let state = &slices[slice];
 
             for index in 0..SIZE {
@@ -192,17 +224,12 @@ impl Game {
         for row in self.board.iter() {
             is_drawn = match row {
                 [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
-                _ => {
-                    println!("row = {:?}", row);  // TODO: get rid of this print
-                    true 
-                }
+                _ => true,
             };
             if is_drawn == false {
-                println!("GAME not DRAWN!");  // TODO: get rid of this print
                 return false;
             }
         }
-        println!("GAME WAS DRAWN!");    // TODO: create display for drawn state and test it
         is_drawn
     }
 
@@ -218,7 +245,6 @@ impl Game {
             self.declare_winner();
             return true;
         }
-        println!("No player won the game yet");  // TODO: get rid of this print
         false
     }
 
@@ -276,7 +302,7 @@ impl fmt::Display for Game {
 
 fn main() {
     let mut game = Game::new();
-    game.start(true, true);
+    game.start(false, true);
     println!("{}", game);
 
     while game.end_game == false {
