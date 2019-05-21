@@ -115,6 +115,7 @@ impl Game {
         self.board[x][y] = self.players[self.curr_player];
         self.coordinates[loc].legal = false;
 
+        // Check for endgame and change players
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
     }
@@ -131,6 +132,7 @@ impl Game {
         let mut loc = rng.gen_range(0, max_rng);
         let mut valid: bool = self.coordinates[loc].legal;
 
+        // Make sure the move is valid
         while valid == false {
             loc = rng.gen_range(0, max_rng);
             valid = self.coordinates[loc].legal;
@@ -141,6 +143,8 @@ impl Game {
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
         println!("\nWhere do you want to place your piece? ");
+
+        // Display location indices
         let example_board = [['0', '1', '2'], 
                              ['3', '4', '5'], 
                              ['6', '7', '8']];
@@ -153,9 +157,13 @@ impl Game {
                 total_lines -= 1;
             }
         }
+        println!("\n");
+
+        // Get user's choice for piece placement
         let mut loc = self.get_user_input();
         let mut valid: bool = self.coordinates[loc].legal;
 
+        // Make sure the move is valid
         while valid == false {
             println!("\nA piece is already placed there. Please enter a valid location: ");
             loc = self.get_user_input();
@@ -170,9 +178,12 @@ impl Game {
             Ok(result) => result,
             Err(error) => panic!("Unable to flush buffer, {}", error),
         };
+
+        // Grab user's response
         let mut user_response = String::new();
         stdin().read_line(&mut user_response).unwrap();
 
+        // Check that the input was a valid character
         let mut first_char = user_response.chars().next().unwrap();
         match &mut first_char {
             '0' ... '8' => {
@@ -206,6 +217,8 @@ impl Game {
                 let y = self.coordinates[loc].y;
                 board_slice.push(self.board[x][y])
             }
+
+            // Check the current slice of the board for a winning state
             if self.is_win(&board_slice) == true {
                 board_slice.clear();
                 return true;
@@ -213,7 +226,7 @@ impl Game {
             board_slice.clear();
         }
 
-        // if board is full, check for drawn state
+        // if the board is full, check for drawn state
         self.is_draw()
     }
 
@@ -222,8 +235,8 @@ impl Game {
         let mut is_drawn = true;
         for row in self.board.iter() {
             is_drawn = match row {
-                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
-                _ => true,
+                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,  // board is not full
+                _ => true,                                         // board is full
             };
             if is_drawn == false {
                 return false;
@@ -266,6 +279,9 @@ impl Game {
 }
 
 fn coord_mapping() -> Vec<Coord> {
+    // Generates a coordinate mapping of vector indices -> coordinates on the board
+    // and `legal` represents whether a square is available for placing a piece (True)
+    // or already has a piece placed on it (False)
     let mut coordinates: Vec<Coord> = vec![];
     for i in 0..SIZE {
         for j in 0..SIZE {
@@ -286,7 +302,7 @@ impl fmt::Display for Game {
         }
 
         let mut total_lines = &SIZE - 1;
-        write!(formatter, "\nPlayer 1 ({})\nPlayer 2 ({})", &self.auto_play.play_type[0], &self.auto_play.play_type[1]);
+        write!(formatter, "\nPlayer 1 ({}), Player 2 ({})", &self.auto_play.play_type_str[0], &self.auto_play.play_type_str[1]);
         write!(formatter, "\nGame {}:\n", &game_status);
         for row in &self.board {
             write!(formatter, "  {} | {} | {}\n", row[0], row[1], row[2]);
@@ -300,6 +316,7 @@ impl fmt::Display for Game {
 }
 
 fn main() {
+    // Play the game until an endgame state is reached
     let mut game = Game::new();
     game.start(false, true);
     println!("{}", game);
@@ -310,7 +327,6 @@ fn main() {
     }
     game.reset();
 }
-
 
 
 /*****************
