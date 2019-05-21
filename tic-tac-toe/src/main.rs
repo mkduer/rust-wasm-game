@@ -2,10 +2,10 @@ use std::fmt;
 use rand::{thread_rng, Rng};
 use std::io::{stdin, stdout, Write};
 
-const SIZE: usize = 3;
-const P1: char = 'X';
-const P2: char = 'O';
-const NOP: usize = 9;
+const P1: char = 'X';       // player 1's piece
+const P2: char = 'O';       // player 2's piece
+const SIZE: usize = 3;      // row/col sizes for board
+const NO_WIN: usize = 9;    // default, invalid value to represent no winner
 
 #[derive(Debug, PartialEq)]
 struct AutoPlay {
@@ -24,7 +24,7 @@ impl Default for AutoPlay {
 
 #[derive(Debug, PartialEq)]
 struct Coord {
-    // Coordinate struct for mapping array indices to coordinates and
+    // Struct for mapping array indices to coordinates
     x: usize,       // x-coordinate
     y: usize,       // y-coordinate
     legal: bool,    // flag: True if it is legal to place a piece on the coordinate, False if coordinate is already full
@@ -32,6 +32,7 @@ struct Coord {
 
 #[derive(Debug, PartialEq)]
 struct WinState {
+    // Struct containing representations of win states
     p1_win_state: Vec<char>,    // represents player 1's win state
     p2_win_state: Vec<char>,    // represents player 2's win state
 }
@@ -50,6 +51,7 @@ impl Default for WinState {
 
 #[derive(Debug, PartialEq)]
 struct Game {
+    // Struct with tic-tac-toe game settings and components
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
     players: [char; 2],             // players represented by pieces
@@ -73,7 +75,7 @@ impl Game {
             end_game: false,
             coordinates: coord_mapping(),
             win_states: WinState::default(),
-            winner: NOP,
+            winner: NO_WIN,
         }
     }
 
@@ -85,15 +87,23 @@ impl Game {
         match self.auto_play {
             AutoPlay { play_type: [false, false], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "manual".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [true, false], .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "manual".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [false, true], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "automatic".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "automatic".to_string()];
+                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
         }
     }
@@ -113,6 +123,7 @@ impl Game {
         self.board[x][y] = self.players[self.curr_player];
         self.coordinates[loc].legal = false;
 
+        // Check for endgame and change players
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
     }
@@ -129,9 +140,9 @@ impl Game {
         let mut loc = rng.gen_range(0, max_rng);
         let mut valid: bool = self.coordinates[loc].legal;
 
+        // Make sure the move is valid
         while valid == false {
             loc = rng.gen_range(0, max_rng);
-            println!("loc: {}", loc);
             valid = self.coordinates[loc].legal;
         }
         loc
@@ -139,8 +150,9 @@ impl Game {
 
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        println!("{}", self);
         println!("\nWhere do you want to place your piece? ");
+
+        // Display location indices
         let example_board = [['0', '1', '2'], 
                              ['3', '4', '5'], 
                              ['6', '7', '8']];
@@ -153,38 +165,44 @@ impl Game {
                 total_lines -= 1;
             }
         }
-        let mut user_move = self.get_user_input();
-        let mut loc = user_move.to_digit(10).unwrap() as usize;
+        println!("\n");
+
+        // Get user's choice for piece placement
+        let mut loc = self.get_user_input();
         let mut valid: bool = self.coordinates[loc].legal;
 
+        // Make sure the move is valid
         while valid == false {
             println!("\nA piece is already placed there. Please enter a valid location: ");
-            user_move = self.get_user_input();
-            loc = user_move.to_digit(10).unwrap() as usize;
+            loc = self.get_user_input();
             valid = self.coordinates[loc].legal;
         }
         loc
     }
 
-    fn get_user_input(&mut self) -> char {
+    fn get_user_input(&mut self) -> usize {
         // Grabs the user's move from stdin and checks for validity
         let _clean = match stdout().flush() {
             Ok(result) => result,
             Err(error) => panic!("Unable to flush buffer, {}", error),
         };
+
+        // Grab user's response
         let mut user_response = String::new();
         stdin().read_line(&mut user_response).unwrap();
 
+        // Check that the input was a valid character
         let mut first_char = user_response.chars().next().unwrap();
-        let mut loc = match &mut first_char {
-            '0' ... '8' => first_char,
+        match &mut first_char {
+            '0' ... '8' => {
+                println!("You entered: {}", first_char);
+                first_char.to_digit(10).unwrap() as usize
+            },
             _ => { 
                 println!("\nPlease enter a valid response: ");
                 self.get_user_input()
             },
-        };
-        println!("You entered: {}", loc);
-        loc
+        }
     }
 
     fn is_endgame(&mut self) -> bool {
@@ -207,6 +225,8 @@ impl Game {
                 let y = self.coordinates[loc].y;
                 board_slice.push(self.board[x][y])
             }
+
+            // Check the current slice of the board for a winning state
             if self.is_win(&board_slice) == true {
                 board_slice.clear();
                 return true;
@@ -214,7 +234,7 @@ impl Game {
             board_slice.clear();
         }
 
-        // if board is full, check for drawn state
+        // if the board is full, check for drawn state
         self.is_draw()
     }
 
@@ -223,8 +243,8 @@ impl Game {
         let mut is_drawn = true;
         for row in self.board.iter() {
             is_drawn = match row {
-                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,
-                _ => true,
+                [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,  // board is not full
+                _ => true,                                         // board is full
             };
             if is_drawn == false {
                 return false;
@@ -262,11 +282,14 @@ impl Game {
         self.end_game = false;
         self.coordinates.clear();
         self.coordinates = coord_mapping();
-        self.winner = NOP;
+        self.winner = NO_WIN;
     }
 }
 
 fn coord_mapping() -> Vec<Coord> {
+    // Generates a coordinate mapping of vector indices -> coordinates on the board
+    // and `legal` represents whether a square is available for placing a piece (True)
+    // or already has a piece placed on it (False)
     let mut coordinates: Vec<Coord> = vec![];
     for i in 0..SIZE {
         for j in 0..SIZE {
@@ -287,7 +310,6 @@ impl fmt::Display for Game {
         }
 
         let mut total_lines = &SIZE - 1;
-        write!(formatter, "\nPlayer 1 ({})\nPlayer 2 ({})", &self.auto_play.play_type[0], &self.auto_play.play_type[1]);
         write!(formatter, "\nGame {}:\n", &game_status);
         for row in &self.board {
             write!(formatter, "  {} | {} | {}\n", row[0], row[1], row[2]);
@@ -301,6 +323,7 @@ impl fmt::Display for Game {
 }
 
 fn main() {
+    // Play the game until an endgame state is reached
     let mut game = Game::new();
     game.start(false, true);
     println!("{}", game);
@@ -311,7 +334,6 @@ fn main() {
     }
     game.reset();
 }
-
 
 
 /*****************
@@ -396,10 +418,7 @@ mod tests {
         if game.end_game {
             game_status = "Game ended".to_string();
         }
-        let mut expect_board = format!("\nPlayer 1 ({})\nPlayer 2 ({})\n{}:", 
-                                       &game.auto_play.play_type[0], 
-                                       &game.auto_play.play_type[1], 
-                                       &game_status);
+        let mut expect_board = format!("\n{}:", &game_status);
         expect_board += "\n    |   |  \n -----------\n    |   |  \n -----------\n    |   |  \n";
         assert_eq!(expect_board, format!("{}", game));
     }
@@ -454,7 +473,7 @@ mod tests {
         let mut game = Game::new();
         let test_row: Vec<char> = vec![' ', P1, ' '];
         let _game_won = game.is_win(&test_row);
-        assert_eq!(game.winner, NOP);
+        assert_eq!(game.winner, NO_WIN);
     }
 
     #[test]
