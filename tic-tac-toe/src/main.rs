@@ -2,10 +2,10 @@ use std::fmt;
 use rand::{thread_rng, Rng};
 use std::io::{stdin, stdout, Write};
 
-const SIZE: usize = 3;
-const P1: char = 'X';
-const P2: char = 'O';
-const NOP: usize = 9;
+const P1: char = 'X';       // player 1's piece
+const P2: char = 'O';       // player 2's piece
+const SIZE: usize = 3;      // row/col sizes for board
+const NO_WIN: usize = 9;    // default, invalid value to represent no winner
 
 #[derive(Debug, PartialEq)]
 struct AutoPlay {
@@ -24,7 +24,7 @@ impl Default for AutoPlay {
 
 #[derive(Debug, PartialEq)]
 struct Coord {
-    // Coordinate struct for mapping array indices to coordinates and
+    // Struct for mapping array indices to coordinates
     x: usize,       // x-coordinate
     y: usize,       // y-coordinate
     legal: bool,    // flag: True if it is legal to place a piece on the coordinate, False if coordinate is already full
@@ -32,6 +32,7 @@ struct Coord {
 
 #[derive(Debug, PartialEq)]
 struct WinState {
+    // Struct containing representations of win states
     p1_win_state: Vec<char>,    // represents player 1's win state
     p2_win_state: Vec<char>,    // represents player 2's win state
 }
@@ -50,6 +51,7 @@ impl Default for WinState {
 
 #[derive(Debug, PartialEq)]
 struct Game {
+    // Struct with tic-tac-toe game settings and components
     board: [[char; SIZE]; SIZE],    // tic tac toe board
     curr_player: usize,             // current player 
     players: [char; 2],             // players represented by pieces
@@ -73,7 +75,7 @@ impl Game {
             end_game: false,
             coordinates: coord_mapping(),
             win_states: WinState::default(),
-            winner: NOP,
+            winner: NO_WIN,
         }
     }
 
@@ -131,7 +133,6 @@ impl Game {
 
         while valid == false {
             loc = rng.gen_range(0, max_rng);
-            println!("loc: {}", loc);
             valid = self.coordinates[loc].legal;
         }
         loc
@@ -139,7 +140,6 @@ impl Game {
 
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        println!("{}", self);
         println!("\nWhere do you want to place your piece? ");
         let example_board = [['0', '1', '2'], 
                              ['3', '4', '5'], 
@@ -153,20 +153,18 @@ impl Game {
                 total_lines -= 1;
             }
         }
-        let mut user_move = self.get_user_input();
-        let mut loc = user_move.to_digit(10).unwrap() as usize;
+        let mut loc = self.get_user_input();
         let mut valid: bool = self.coordinates[loc].legal;
 
         while valid == false {
             println!("\nA piece is already placed there. Please enter a valid location: ");
-            user_move = self.get_user_input();
-            loc = user_move.to_digit(10).unwrap() as usize;
+            loc = self.get_user_input();
             valid = self.coordinates[loc].legal;
         }
         loc
     }
 
-    fn get_user_input(&mut self) -> char {
+    fn get_user_input(&mut self) -> usize {
         // Grabs the user's move from stdin and checks for validity
         let _clean = match stdout().flush() {
             Ok(result) => result,
@@ -176,15 +174,16 @@ impl Game {
         stdin().read_line(&mut user_response).unwrap();
 
         let mut first_char = user_response.chars().next().unwrap();
-        let mut loc = match &mut first_char {
-            '0' ... '8' => first_char,
+        match &mut first_char {
+            '0' ... '8' => {
+                println!("You entered: {}", first_char);
+                first_char.to_digit(10).unwrap() as usize
+            },
             _ => { 
                 println!("\nPlease enter a valid response: ");
                 self.get_user_input()
             },
-        };
-        println!("You entered: {}", loc);
-        loc
+        }
     }
 
     fn is_endgame(&mut self) -> bool {
@@ -262,7 +261,7 @@ impl Game {
         self.end_game = false;
         self.coordinates.clear();
         self.coordinates = coord_mapping();
-        self.winner = NOP;
+        self.winner = NO_WIN;
     }
 }
 
@@ -454,7 +453,7 @@ mod tests {
         let mut game = Game::new();
         let test_row: Vec<char> = vec![' ', P1, ' '];
         let _game_won = game.is_win(&test_row);
-        assert_eq!(game.winner, NOP);
+        assert_eq!(game.winner, NO_WIN);
     }
 
     #[test]
