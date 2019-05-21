@@ -339,44 +339,13 @@ fn main() {
 }
 
 
-/*****************
- INTEGRATION TESTS
-******************/
-
-#[cfg(test)]
-mod integration_tests {
-    use super::*;
-    use more_asserts::{assert_ge};
-
-    #[test]
-    fn test_auto_move_reaches_endgame() {
-        // Should result in an endgame within Game const `SIZE * SIZE` moves, 
-        // otherwise, there is a halting error, which is caught by the while loop's
-        // `max_moves > -2` stopping condition. If this stopping condition is used
-        // the assert will fail.
-        let mut max_moves = (SIZE * SIZE) as isize;
-        let mut game = Game::new();
-
-        game.start(true, true);
-
-        while (game.end_game == false) && (max_moves > -2) {
-            println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
-            game.update();
-            max_moves -= 1;
-        }
-        println!("exited while loop");
-        println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
-        assert_ge!(max_moves, 0)
-    }
-}
-
-
 /***********
  UNIT TESTS
 ************/
 #[cfg(test)]
 mod tests {
     use super::*;
+    use more_asserts::{assert_ge};
 
     #[test]
     fn test_board_init() {
@@ -424,6 +393,27 @@ mod tests {
         let mut expect_board = format!("\n{}:", &game_status);
         expect_board += "\n    |   |  \n -----------\n    |   |  \n -----------\n    |   |  \n";
         assert_eq!(expect_board, format!("{}", game));
+    }
+
+    #[test]
+    fn test_auto_move_reaches_endgame() {
+        // Should result in an endgame within Game const `SIZE * SIZE` moves, 
+        // otherwise, there is a halting error, which is caught by the while loop's
+        // `max_moves > -2` stopping condition. If this stopping condition is used
+        // the assert will fail.
+        let mut max_moves = (SIZE * SIZE) as isize;
+        let mut game = Game::new();
+
+        game.start(true, true);
+
+        while (game.end_game == false) && (max_moves > -2) {
+            println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
+            game.update();
+            max_moves -= 1;
+        }
+        println!("exited while loop");
+        println!("max_moves: {:?}, end_game: {:?}", max_moves, game.end_game);
+        assert_ge!(max_moves, 0)
     }
 
     #[test]
