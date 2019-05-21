@@ -374,7 +374,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_board_init_vals() {
+    fn test_board_init() {
         // Test that init board contains correct values
         let board: [[char; SIZE]; SIZE];
         board = [[' ', ' ', ' '], 
@@ -466,7 +466,7 @@ mod tests {
     }
 
     #[test]
-    fn test_no_win_state() {
+    fn test_is_win_none() {
         // Test for correct default value when there is no winner
         let mut game = Game::new();
         let test_row: Vec<char> = vec![' ', P1, ' '];
@@ -494,7 +494,7 @@ mod tests {
 
 
     #[test]
-    fn test_declare_p1_winner() {
+    fn test_declare_winner_p1() {
         // Test that the correct winner was declared 
         // by testing the printed variable's value (left-hand assert_eq param)
         // with the expected value (right-hand assert_eq param)
@@ -506,7 +506,7 @@ mod tests {
     }
 
     #[test]
-    fn test_declare_p2_winner() {
+    fn test_declare_winner_p2() {
         // Test that the correct winner was declared 
         // by testing the printed variable's value (left-hand assert_eq param)
         // with the expected value (right-hand assert_eq param)
@@ -542,7 +542,7 @@ mod tests {
 
         game.board = [['O', 'X', 'O'],
                       ['O', 'X', 'X'],
-                      ['X', 'O', 'O']];
+                      ['X', 'O', 'X']];
         assert_eq!(game.is_draw(), true);
 
         game.board = [['X', 'X', 'O'],
@@ -558,7 +558,7 @@ mod tests {
 
         game.board = [['X', 'O', 'O'],
                       ['O', 'X', ' '],
-                      ['X', 'O', ' ']];
+                      ['X', 'X', ' ']];
         assert_ne!(game.is_draw(), true);
 
         game.board = [[' ', ' ', ' '],
@@ -590,7 +590,7 @@ mod tests {
 
         // drawn end game
         game.board = [['X', 'O', 'O'],
-                      ['O', 'X', 'O'],
+                      ['O', 'X', 'X'],
                       ['X', 'O', 'X']];
         assert_eq!(game.is_endgame(), true);
 
@@ -607,8 +607,18 @@ mod tests {
         let mut game = Game::new();
 
         game.board = [['O', ' ', 'O'],
-                      ['O', 'X', 'O'],
+                      ['O', 'X', 'X'],
                       ['X', 'O', 'X']];
+        assert_eq!(game.is_endgame(), false);
+
+        game.board = [['O', 'X', 'X'],
+                      [' ', ' ', 'X'],
+                      [' ', ' ', 'O']];
+        assert_eq!(game.is_endgame(), false);
+
+        game.board = [['X', 'O', 'O'],
+                      ['X', 'O', 'X'],
+                      [' ', 'X', ' ']];
         assert_eq!(game.is_endgame(), false);
     }
 }
