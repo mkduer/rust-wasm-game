@@ -110,12 +110,10 @@ impl Game {
 
     fn update(&mut self) { 
         // Have the current player choose a location for their move 
-        let loc: usize;
-        if self.auto_play.play_type[self.curr_player] == true {
-            loc = self.auto_move();
-        } else {
-            loc = self.manual_move();
-        }
+        let loc: usize = match &self.auto_play.play_type[self.curr_player] {
+            true => self.auto_move(),
+            false => self.manual_move(),
+        };
 
         // Update the board and coordinates
         let x = self.coordinates[loc].x;
