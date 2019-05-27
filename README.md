@@ -1,6 +1,6 @@
 # rust-wasm-game
 
-The basic goal of this program is to create a tic-tac-toe game allowing for manual and/or automatic play by two players. The long-term goal if this program is compiling the Rust code over to WASM and playable through the web browser.
+The basic goal of this program is to create a tic-tac-toe game allowing for manual and/or automatic play by two players. The long-term goal if this program is compiling the Rust code over to WASM and making the game playable through the web browser.
 
 ## Build 
 
