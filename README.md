@@ -1,2 +1,4 @@
 # rust-wasm-game
-Rust compiled to WASM project
+Tic-Tac-Toe game
+
+Next Steps: Compile to WASM
