@@ -2,12 +2,12 @@ use std::fmt;
 use rand::{thread_rng, Rng};
 use std::io::{stdin, stdout, Write};
 
-const P1_PLAY: bool = false; // player 1 is set to `false` for automated play to start
-const P2_PLAY: bool = true;  // player 2 is set to `true` for manual play to start
-const P1: char = 'X';       // player 1's piece
-const P2: char = 'O';       // player 2's piece
-const SIZE: usize = 3;      // row/col sizes for board
-const NO_WIN: usize = 9;    // default, invalid value to represent no winner
+const P1_PLAY: bool = false;    // player 1 is set to `false` for automated play to start
+const P2_PLAY: bool = true;     // player 2 is set to `true` for manual play to start
+const P1: char = 'X';           // player 1's piece
+const P2: char = 'O';           // player 2's piece
+const SIZE: usize = 3;          // row/col sizes for board
+const NO_WIN: usize = 9;        // default, invalid value to represent no winner
 const BOARD_IDX: [[char; 3]; 3] = [['0', '1', '2'],     // indexed board for user's reference
                                    ['3', '4', '5'], 
                                    ['6', '7', '8']];

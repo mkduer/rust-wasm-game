@@ -16,7 +16,7 @@ The basic goal of this program is to create a tic-tac-toe game allowing for manu
    `const P1_PLAY bool = false;`
 `const P2_PLAY bool = true;`
    
-   To change these settings, the constant booleans `P1_PLAY` and `P2_PLAY` can be altered for full manual or full automatic play.
+   The settings can be changed by updating the constant booleans `P1_PLAY` and `P2_PLAY` for fully manual or fully automatic play.
 
 * Test the program by running the unit tests: `cargo test`
   
