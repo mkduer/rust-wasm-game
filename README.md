@@ -27,3 +27,5 @@ Test the program by running the unit tests: `cargo test`
 
 - Compile to WASM
 - Make a clean GUI
+
+Copyright (c) 2019 Michelle Duer
