@@ -93,25 +93,19 @@ impl Game {
         match self.auto_play {
             AutoPlay { play_type: [false, false], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "manual".to_string()];
-                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
-                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [true, false], .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "manual".to_string()];
-                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
-                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { play_type: [false, true], .. } => {
                 self.auto_play.play_type_str = ["manual".to_string(), "automatic".to_string()];
-                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
-                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
             AutoPlay { .. } => {
                 self.auto_play.play_type_str = ["automatic".to_string(), "automatic".to_string()];
-                println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
-                                                                                   P2, &self.auto_play.play_type_str[1]);
             },
         }
+        println!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", P1, &self.auto_play.play_type_str[0], 
+                                                                           P2, &self.auto_play.play_type_str[1]);
     }
 
     fn update(&mut self) { 
@@ -251,7 +245,7 @@ impl Game {
                 [' ', _, _] | [_, ' ', _] | [_, _, ' '] => false,  // board is not full
                 _ => true,                                         // board is full
             };
-            if is_drawn == false {
+            if !is_drawn {
                 return false;
             }
         }
