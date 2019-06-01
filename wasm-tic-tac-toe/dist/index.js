@@ -1,11 +1,8 @@
-/* 
-*  reference: wasm-bindgen `Hello World`
-*  https://rustwasm.github.io/docs/wasm-bindgen/examples/hello-world.html
-*  importing from local package
+/*
+*  reference for starting point: 
+*  https://rustwasm.github.io/docs/book/game-of-life/hello-world.html
 */
 
-const rust = import('../pkg/wasm_tic_tac_toe');
+import * as wasm from "../pkg/wasm_tic_tac_toe";
 
-rust
-  .then(m => m.greet('👽'))
-  .catch(console.error);
+wasm.greet();

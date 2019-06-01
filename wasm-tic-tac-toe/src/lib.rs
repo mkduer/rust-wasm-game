@@ -1,12 +1,23 @@
-extern crate wasm_bindgen;
+/*
+*  reference for starting code:
+*  https://rustwasm.github.io/docs/book/game-of-life/hello-world.html
+*/
+
+mod utils;
+
 use wasm_bindgen::prelude::*;
+
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 extern {
-    pub fn alert(s: &str);
+    fn alert(s: &str);
 }
 
 #[wasm_bindgen]
-pub fn greet(alien: &str) {
-    alert(&format!("WASM invasion, fuck yeah! Ooooohhhhh {}!", alien));
+pub fn greet() {
+    alert("Testing 1, 2, 3");
 }
