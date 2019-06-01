@@ -5,9 +5,8 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "@mkduer/wasm-tic-tac-toe": "^0.1.0"
-  },
-  "devDependencies": {
+    "@wasm-tool/wasm-pack-plugin": "0.4.2",
+    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1"
