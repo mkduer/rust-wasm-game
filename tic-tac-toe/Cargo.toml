@@ -3,6 +3,9 @@ name = "tic-tac-toe"
 version = "0.1.0"
 authors = ["mkd <mkduer@gmail.com>"]
 edition = "2018"
+description = "A tic-tac-toe game (implemented in order to learn Rust)"
+license = "Apache-2.0"
+repository = "https://github.com/mkduer/rust-wasm-game"
 
 [dependencies]
 rand = "0.6.5"

@@ -1,4 +1,8 @@
-# Rust ignore files
+# Rust
 target/
 **/Cargo.lock
 **/*.rs.bk
+
+# web
+pkg/
+node_modules/

@@ -1,0 +1,18 @@
+[package]
+name = "wasm-tic-tac-toe"
+version = "0.1.0"
+authors = ["mkduer <mkduer@gmail.com>"]
+edition = "2018"
+description = "A Rust tic-tac-toe game compiled to WASM"
+license = "Apache-2.0"
+repository = "https://github.com/mkduer/rust-wasm-game"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rand = "0.6.5"
+more-asserts = "0.2.1"
+cfg-if = "0.1.9"
+wasm-bindgen = "0.2.45"
+wee_alloc = "0.4.4"
