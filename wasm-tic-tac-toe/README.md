@@ -1,8 +1,8 @@
-###  Rust Compiled to WASM
+##  Rust Compiled to WASM
 
 This version of the Rust tic-tac-toe game will be compiled over to WebAssembly (WASM). 
 
-### Build 
+## Build 
 
 Clone or fork the repo: `git clone git@github.com:mkduer/rust-wasm-game.git`
 
@@ -14,8 +14,10 @@ Build dependencies and start the web server with the following sequence of comma
   `npm install`  
   `npm start`  
 
-### In-Progress Steps...
-
+## Next Steps...
+- Compile to WASM (wip)
+- Make a clean GUI
+  
 ### Resources
 
 The following resources were the most helpful in learning more about Rust + WASM:
@@ -25,4 +27,18 @@ The following resources were the most helpful in learning more about Rust + WASM
 
 Some of the main challenges were finding recent articles and examples specifically using the specific set of languages I wanted to learn: Rust, WASM and React.js. There were many issues trying to build with outdated tool versions, limited error handling in WASM, and much of this project demonstrates learning based on trial + test experimentation.
 
+
+##### Copyright (c) 2019 Michelle Duer
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 
