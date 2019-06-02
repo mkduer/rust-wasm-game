@@ -3,25 +3,20 @@
 *  https://rustwasm.github.io/docs/book/game-of-life/hello-world.html
 */
 
-import * as wasm from "../pkg/wasm_tic_tac_toe";
+import { Game } from "../pkg/wasm_tic_tac_toe";
 
-wasm.greet();
+const game = Game.new();
 
 const name = document.getElementById("game-name");
 const pre = document.getElementById("tic-tac-toe-canvas");
+const status = document.getElementById("player-status");
 
-name.textContent = wasm.game_name();
-pre.textContent = wasm.mutate(5, 2);
+name.textContent = Game.title();
+game.start(true, true)
 
-
-
+status.textContent = game.render();
 
 /*
-import { Game } from "../pkg/wasm_tic_tac_toe";
-
-const pre = document.getElementById("tic-tac-toe-canvas");
-const game = Game.new();
-game.start();
 const renderLoop = () => {
   pre.textContent = wasm.mutate(5, 2);
   requestAnimationFrame(renderLoop);
