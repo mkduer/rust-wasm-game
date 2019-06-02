@@ -104,8 +104,29 @@ impl Game {
         }
     }
 
+    pub fn render_board(&self) -> String {
+        let mut board_state: String = "".to_string();
+        let mut total_lines = &SIZE - 1;
+        for row in &self.board {
+            board_state += &format!("  {} | {} | {}<br />", row[0], row[1], row[2]);
+            if total_lines > 0 {
+                board_state += &format!(" -----------<br />");
+                total_lines -= 1;
+            }
+        }
+        board_state += &format!("<br />");
+        board_state
+    }
+
     pub fn title(&self) -> String {
         "Tic Tac Toe".to_string()
+    }
+
+    pub fn render_game_state(&self) -> String {
+        let state: String = format!("\nBoard: {}\nCurrent Player: {}\nEnd Game: {}\nWinner: {}\n", 
+                                     &self.render_board(), &self.curr_player, 
+                                     &self.end_game, &self.winner);
+        state
     }
 
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
@@ -129,7 +150,7 @@ impl Game {
         }
     }
 
-    pub fn render() -> String {
+    pub fn render_player_status(&self) -> String {
         let status: String = format!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", 
                                      P1, &self.auto_play.play_type_str[0], 
                                      P2, &self.auto_play.play_type_str[1]);

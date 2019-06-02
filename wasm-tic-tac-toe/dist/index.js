@@ -9,16 +9,18 @@ const game = Game.new();
 
 const name = document.getElementById("game-name");
 const pre = document.getElementById("tic-tac-toe-canvas");
-const status = document.getElementById("player-status");
+const player_status = document.getElementById("player-status");
+const game_state = document.getElementById("game-state");
 
-name.textContent = Game.title();
 game.start(true, true)
 
-status.textContent = game.render();
+name.textContent = game.title();
+player_status.textContent = game.render_player_status();
+game_state.textContent = game.render_game_state();
 
 /*
 const renderLoop = () => {
-  pre.textContent = wasm.mutate(5, 2);
+  pre.textContent = game... // TODO
   requestAnimationFrame(renderLoop);
 }
 */
