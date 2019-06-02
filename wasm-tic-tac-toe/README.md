@@ -15,10 +15,11 @@ Build dependencies and start the web server with the following sequence of comma
   `npm start`  
 
 ## Next Steps...
-- Compile to WASM (wip)
-- Make a clean GUI
+- Compile to WASM (wip) with a cli-like appearance for proof-of-concept browser game
+- Try another implementation with `serde`
+- Try to get WASM and React.js working together
   
-### Resources
+## Resources
 
 The following resources were the most helpful in learning more about Rust + WASM:
 *  [Tutorial: Conway's Game of Life](https://rustwasm.github.io/docs/book/game-of-life/introduction.html)
