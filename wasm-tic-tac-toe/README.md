@@ -2,19 +2,19 @@
 
 This version of the Rust tic-tac-toe game will be compiled over to WebAssembly (WASM). 
 
-### In-Progress Steps 
+### Build 
 
-From the directory **wasm-tic-tac-toe**, compile Rust into WebAssembly with the following command:  
+Clone or fork the repo: `git clone git@github.com:mkduer/rust-wasm-game.git`
+
+Go into the directory **wasm-tic-tac-toe**, compile Rust into WebAssembly:  
   `wasm-pack build`
 
-Build dependencies and start the web server:  
+Build dependencies and start the web server with the following sequence of commands:  
   `cd dist`  
   `npm install`  
   `npm start`  
 
-
-
-
+### In-Progress Steps...
 
 ### Resources
 
