@@ -1,18 +1,22 @@
 {
   "description": "Rust tic-tac-toe game that compiles to WASM",
   "license": "Apache-2.0",
-  "scripts": {
-    "start": "webpack-dev-server"
-  },
-  "dependencies": {
-    "@wasm-tool/wasm-pack-plugin": "0.4.2",
-    "html-webpack-plugin": "^3.2.0",
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.4.1"
+  "main": "index.js",
+  "bin": {
+    "wasm-tic-tac-toe": ".bin/wasm-tic-tac-toe.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mkduer/rust-wasm-game"
+    "url": "https://github.com/mkduer/rust-wasm-game/tree/master/wasm-tic-tac-toe"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "copy-webpack-plugin": "^5.0.0"
   }
 }
