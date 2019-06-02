@@ -1,35 +1,29 @@
 # rust-wasm-game
 
-The basic goal of this program is to create a tic-tac-toe game allowing for manual and/or automatic play by two players. The long-term goal if this program is compiling the Rust code over to WASM and making the game playable through the web browser.
+This project has two versions of tic-tac-toe in Rust.
 
-## Build 
+### tic-tac-toe
 
-Clone or fork the repo: `git clone git@github.com:mkduer/rust-wasm-game.git`
-
-Go into the **tic-tac-toe** directory and build with dependencies: `cargo build`
-
-## Play
-
-Run the game: `cargo run`
-
-The current settings setup an automated Player 1 for a manual Player 2 to play against with the current settings: 
-
-`const P1_PLAY bool = false;  // automatic`  
-`const P2_PLAY bool = true;  // manual`
-
-The player settings can be changed with different boolean values for the constants `P1_PLAY` and `P2_PLAY` on lines 5-6 of `main.rs`
-
-## Test
-
-Test the program by running the unit tests: `cargo test`
-
-## Next Steps
-
-- Compile to WASM
-- Make a clean GUI
+This implementation creates a command-line version of the game allowing for manual and/or automatic play by two players. The instructions for building, running, and playing the game are detailed in the **tic-tac-toe** directory's [README.md](https://github.com/mkduer/rust-wasm-game/tree/master/tic-tac-toe)
 
 
-#### Copyright (c) 2019 Michelle Duer
+
+### wasm-tic-tac-toe
+
+This version takes a similar implementation as the previous in terms of game play. However, this Rust code is compiled to WebAssembly (WASM) using `wasm-bindgen`, `wasm-pack` and other tools in order to make the game playable through the browser. 
+
+WebAssembly is still a new-ish technology that was first announced in 2015. This assembly-like language allows for languages like Rust/C/C++ to be compiled with their memory-saving, efficiency, and possibly increased security (in the case of Rust) features in a language that can be intertwined with javascript in the browser. While there is a lot of anticipation for the benefits of WASM, there were a lot of unexpected bumps while implementing this project. 
+
+
+
+Note: This version is still in-progress as of June 2, 2019.
+
+This project was built with Ubuntu 18.04 using a Firefox browser. Due to in-progress `wasm-bindgen` features (such as imports for javascript), it is highly encouraged to use the listed versions for Rust dependencies and javascript packages, otherwise compiler warnings and failed builds can occur. The steps for doing so can be found in the project directory's [README.md](https://github.com/mkduer/rust-wasm-game/tree/master/wasm-tic-tac-toe).
+
+
+
+
+##### Copyright (c) 2019 Michelle Duer
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
