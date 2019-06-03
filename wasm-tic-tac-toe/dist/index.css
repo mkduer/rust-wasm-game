@@ -1,0 +1,26 @@
+body {
+    font-family: "Serif";
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+div {
+    margin: 5px;
+}
+#board {
+    font-family: "Monospace";
+    border: 5px solid green;
+    padding: 50px;
+    width: 10%;
+    line-height: 0.55;
+    align-items: center;
+    justify-content: center;
+}
