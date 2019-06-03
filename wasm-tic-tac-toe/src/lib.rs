@@ -105,7 +105,7 @@ impl Game {
     }
 
     pub fn title(&self) -> String {
-        "Tic Tac Toe".to_string()
+        "Rusty Tic Tac Toe\nMagically Compiled to WASM".to_string()
     }
 
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
