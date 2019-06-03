@@ -104,29 +104,8 @@ impl Game {
         }
     }
 
-    pub fn render_board(&self) -> String {
-        let mut board_state: String = "".to_string();
-        let mut total_lines = &SIZE - 1;
-        for row in &self.board {
-            board_state += &format!("  {} | {} | {}<br />", row[0], row[1], row[2]);
-            if total_lines > 0 {
-                board_state += &format!(" -----------<br />");
-                total_lines -= 1;
-            }
-        }
-        board_state += &format!("<br />");
-        board_state
-    }
-
     pub fn title(&self) -> String {
         "Tic Tac Toe".to_string()
-    }
-
-    pub fn render_game_state(&self) -> String {
-        let state: String = format!("\nBoard: {}\nCurrent Player: {}\nEnd Game: {}\nWinner: {}\n", 
-                                     &self.render_board(), &self.curr_player, 
-                                     &self.end_game, &self.winner);
-        state
     }
 
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
@@ -150,16 +129,40 @@ impl Game {
         }
     }
 
-    pub fn render_player_status(&self) -> String {
-        let status: String = format!("\nPlayer 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)\n", 
+    pub fn end_game(&self) -> bool {
+        self.end_game
+    }
+
+    pub fn render_players(&self) -> String {
+        let status: String = format!("Player 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)", 
                                      P1, &self.auto_play.play_type_str[0], 
                                      P2, &self.auto_play.play_type_str[1]);
         status
     }
-}
 
-impl Game {
-    fn update(&mut self) { 
+    pub fn render_board(&self) -> String {
+        let mut board_state: String = "".to_string();
+        let mut total_lines = &SIZE - 1;
+        for row in &self.board {
+            board_state += &format!("\n  {} ┃ {} ┃ {}\n", row[0], row[1], row[2]);
+            if total_lines > 0 {
+                board_state += &format!(" ━━━╋━━━╋━━━\n");
+                total_lines -= 1;
+            }
+        }
+        board_state += &format!("\n");
+        board_state
+    }
+
+    pub fn render_game_state(&self) -> String {
+        let state: String = format!("Current Player: {}, End Game: {}, Winner: {}", 
+                                     &self.curr_player, 
+                                     &self.end_game, 
+                                     &self.winner);
+        state
+    }
+
+    pub fn update(&mut self) { 
         // Have the current player choose a location for their move 
         let loc: usize = match &self.auto_play.play_type[self.curr_player] {
             true => self.auto_move(),
@@ -176,6 +179,21 @@ impl Game {
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
     }
+
+    pub fn reset(&mut self) {
+        // Reset Game
+        self.board = [[' ', ' ', ' '], 
+                     [' ', ' ', ' '], 
+                     [' ', ' ', ' ']];
+        self.curr_player = 0;
+        self.end_game = false;
+        self.coordinates.clear();
+        self.coordinates = coord_mapping();
+        self.winner = NO_WIN;
+    }
+}
+
+impl Game {
 
     fn switch_player(&mut self) -> usize {
         // Switch current player
@@ -321,18 +339,6 @@ impl Game {
     fn declare_winner(&mut self) {
         // Declares a winner
         println!("\nWINNER: Player {} won the game!", self.players[self.winner]);
-    }
-
-    fn reset(&mut self) {
-        // Reset Game
-        self.board = [[' ', ' ', ' '], 
-                     [' ', ' ', ' '], 
-                     [' ', ' ', ' ']];
-        self.curr_player = 0;
-        self.end_game = false;
-        self.coordinates.clear();
-        self.coordinates = coord_mapping();
-        self.winner = NO_WIN;
     }
 }
 
