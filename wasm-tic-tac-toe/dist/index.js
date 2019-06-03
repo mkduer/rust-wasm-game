@@ -13,11 +13,8 @@ var players = document.getElementById("players");
 var game_state = document.getElementById("game-state");
 var board = document.getElementById("board");
 
-players.setAttribute('style', 'white-space: pre;');
-game_state.setAttribute('style', 'white-space: pre;');
-board.setAttribute('style', 'white-space: pre;');
-
 var game = Game.new();
+
 game.start(true, true)
 title.textContent = game.title();
 players.textContent = game.render_players();
