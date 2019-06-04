@@ -13,20 +13,28 @@ body {
     white-space: pre;
 }
 
-#title {
-    text-align: center;
-}
-
 div {
     margin: 5px;
 }
 .statements {
-    font-size: 80%;
+    font-family: "Nanum Pen Script";
+    color: hsl(223, 8%, 50%);
+    font-size: 115%;
+}
+#title {
+    font-family: "Rock Salt";
+    color: hsl(231, 16%, 23%);
+    text-align: center;
 }
 #board {
     font-family: "Monospace";
+    color: hsl(211, 80%, 48%);
     padding: 20px;
     line-height: 0.59;
+}
+#winner {
+    font-family: "Libre Franklin";
+    color: hsl(211, 80%, 48%);
 }
 
 p.footer {
