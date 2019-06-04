@@ -6,8 +6,9 @@
 import { Game } from "../pkg/wasm_tic_tac_toe";
 
 const draw = 9;
-const seconds = 5;
+const seconds = 1;
 const ms = 1000;
+const delay = seconds * ms;
 
 var game = Game.new();
 
@@ -33,15 +34,11 @@ async function run_game(game) {
 
   console.log('before tick loop');
   do {
-    console.log('Taking a break...');
-    await sleep(2000);
-
+    await sleep(delay);
     tick();
 
     console.log('checking for end game');
     end_game = game.end_game();
-    console.log('end game = ' + end_game);
-    console.log('`endgame == false` is ' + (end_game == false));
   } while (end_game == false);
 
   console.log('game over');
@@ -54,9 +51,7 @@ function tick() {
   // Run the game for one "tick" or move 
   console.log('updating game');
   game.update();
-  console.log('rendering board');
   board.textContent = game.render_board();
-  console.log('rendering game state');
   game_state.textContent = game.render_game_state();
 }
 
