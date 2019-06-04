@@ -12,6 +12,7 @@ body {
     justify-content: center;
     white-space: pre;
 }
+
 #title {
     text-align: center;
 }
@@ -19,10 +20,16 @@ body {
 div {
     margin: 5px;
 }
+.statements {
+    font-size: 80%;
+}
 #board {
     font-family: "Monospace";
-    border: 5px solid green;
-    padding: 50px;
-    width: 10%;
-    line-height: 0.55;
+    padding: 20px;
+    line-height: 0.59;
+}
+
+p.footer {
+    margin: 25px;
+    font-size: 50%;
 }

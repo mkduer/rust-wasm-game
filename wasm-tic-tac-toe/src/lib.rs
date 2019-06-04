@@ -89,6 +89,9 @@ pub struct Game {
 #[wasm_bindgen]
 impl Game {
     pub fn new() -> Self {
+        // allows for console.log debugging of Rust
+        utils::set_panic_hook();
+
         // Initializes the game board, first player piece and default autoplay for both players
         Self {
             board: [[' ', ' ', ' '], 
@@ -129,10 +132,6 @@ impl Game {
         }
     }
 
-    pub fn end_game(&self) -> bool {
-        self.end_game
-    }
-
     pub fn render_players(&self) -> String {
         let status: String = format!("Player 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)", 
                                      P1, &self.auto_play.play_type_str[0], 
@@ -140,13 +139,14 @@ impl Game {
         status
     }
 
+
     pub fn render_board(&self) -> String {
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &self.board {
-            board_state += &format!("\n  {} ┃ {} ┃ {}\n", row[0], row[1], row[2]);
+            board_state += &format!("\n  {} ║ {} ║ {}\n", row[0], row[1], row[2]);
             if total_lines > 0 {
-                board_state += &format!(" ━━━╋━━━╋━━━\n");
+                board_state += &format!(" ═══╬═══╬═══\n");
                 total_lines -= 1;
             }
         }
@@ -178,6 +178,23 @@ impl Game {
         // Check for endgame and change players
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
+    }
+
+    pub fn end_game(&self) -> bool {
+        self.end_game
+    }
+
+    pub fn game_over(&self) -> usize {
+        self.winner
+    }
+
+    pub fn declare_draw(&self) -> String {
+        "DRAW: nobody wins".to_string()
+    }
+
+    pub fn declare_winner(&self) -> String {
+        let winner = format!("Player {} is the WINNER!", self.players[self.winner]);
+        winner
     }
 
     pub fn reset(&mut self) {
@@ -325,20 +342,13 @@ impl Game {
         // Checks for win states and returns True if a win state is reached, False otherwise
         if row == &self.win_states.p1_win_state {
             self.winner = 0;
-            self.declare_winner();
             return true;
         }
         if row == &self.win_states.p2_win_state {
             self.winner = 1;
-            self.declare_winner();
             return true;
         }
         false
-    }
-
-    fn declare_winner(&mut self) {
-        // Declares a winner
-        println!("\nWINNER: Player {} won the game!", self.players[self.winner]);
     }
 }
 
