@@ -16,8 +16,6 @@ use std::io::{stdin, stdout, Write};
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-const P1_PLAY: bool = false;    // player 1 is set to `false` for automated play to start
-const P2_PLAY: bool = true;     // player 2 is set to `true` for manual play to start
 const P1: char = 'X';           // player 1's piece
 const P2: char = 'O';           // player 2's piece
 const SIZE: usize = 3;          // row/col sizes for board
@@ -144,9 +142,9 @@ impl Game {
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &self.board {
-            board_state += &format!("\n  {} ║ {} ║ {}\n", row[0], row[1], row[2]);
+            board_state += &format!("\n {} ║ {} ║ {}\n", row[0], row[1], row[2]);
             if total_lines > 0 {
-                board_state += &format!(" ═══╬═══╬═══\n");
+                board_state += &format!("═══╬═══╬═══\n");
                 total_lines -= 1;
             }
         }
