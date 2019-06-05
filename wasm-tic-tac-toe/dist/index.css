@@ -1,5 +1,5 @@
 body {
-    font-family: "Serif";
+    font-family: "Sans-Serif";
     font-weight: bold;
     position: absolute;
     top: 0;
@@ -13,23 +13,32 @@ body {
     white-space: pre;
 }
 
-div {
-    margin: 5px;
+.btn-group {
+    margin: 10px;
 }
-.statements {
-    font-family: "Nanum Pen Script";
-    color: hsl(223, 8%, 50%);
-    font-size: 115%;
-}
+
 #title {
     font-family: "Rock Salt";
     color: hsl(231, 16%, 23%);
     text-align: center;
+    padding: 10px;
+}
+#start-visible {
+    visibility: visible;
+}
+#start-collapsed {
+    visibility: collapse;
+}
+#players {
+    font-family: "Nanum Pen Script";
+    color: hsl(223, 8%, 50%);
+    font-size: 115%;
 }
 #board {
     font-family: "Monospace";
     color: hsl(211, 80%, 48%);
-    padding: 20px;
+    padding: 10px;
+    margin: 10px;
     line-height: 0.59;
 }
 #winner {
@@ -38,6 +47,5 @@ div {
 }
 
 p.footer {
-    margin: 25px;
     font-size: 50%;
 }
