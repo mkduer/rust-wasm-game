@@ -15,10 +15,16 @@ listen();
 
 function listen() {
   // listen for user selection of automatic/manual play
-
+  var start_visible = document.getElementById("start-visible");
+  var start_collapsed = document.getElementById("start-collapsed");
+  var players = document.getElementById("players");
+  var game_state = document.getElementById("game-state");
+  var winner = document.getElementById("winner");
   var player1_type = true;
   var player2_type = true;
   var reset = false;
+
+  var game = Game.new();
 
   // setup game play style by waiting for the user
   // to select automatic or manual play
@@ -30,7 +36,8 @@ function listen() {
     console.log('auto play selected')
     player1_type = true;
     player2_type = true;
-    main(player1_type, player2_type, reset)
+    game.start(player1_type, player2_type)
+    begin(game, reset, start_visible, start_collapsed, players, game_state, winner)
   };
 
   // settings for manual play button
@@ -38,27 +45,18 @@ function listen() {
     console.log('manual play selected')
     player1_type = true;
     player2_type = false;
-    main(player1_type, player2_type, reset)
+    game.start(player1_type, player2_type)
+    begin(game, reset, start_visible, start_collapsed, players, game_state, winner)
   };
 }
 
-function main(player1_type, player2_type, reset) {
-  var start_visible = document.getElementById("start-visible");
-  var start_collapsed = document.getElementById("start-collapsed");
-  var players = document.getElementById("players");
-  var game_state = document.getElementById("game-state");
-  var winner = document.getElementById("winner");
-
-  var game = Game.new();
-
+function begin(game, reset, start_visible, start_collapsed, players, game_state, winner) {
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
   render(game, players, board, game_state);
   play(game, players, board, game_state, winner,
        start_visible, start_collapsed, reset);
-
-  console.log('game done');
 }
 
 function render(game, players, board, game_state) {
@@ -75,6 +73,7 @@ async function play(game, players, board, game_state, winner, start_visible, sta
 
   do {
     await sleep();
+
     // if the reset button is selected
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, board, game_state, winner, reset);
@@ -86,6 +85,8 @@ async function play(game, players, board, game_state, winner, start_visible, sta
     end_game = game.get_end_game();
   } while (!end_game);
 
+  // select next function based on whether the game
+  // stopped by reset or by reaching the end game
   if (local_reset) {
     console.log('GAME was RESET');
     return listen();

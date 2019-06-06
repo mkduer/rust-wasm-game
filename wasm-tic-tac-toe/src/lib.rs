@@ -105,10 +105,6 @@ impl Game {
         }
     }
 
-    pub fn title(&self) -> String {
-        "Rusty Tic Tac Toe\nMagically Compiled to WASM".to_string()
-    }
-
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
         // Set the automatic/manual play settings for each player in order to start the game
         // Create the coordinates per game size
