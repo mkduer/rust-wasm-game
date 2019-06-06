@@ -112,6 +112,7 @@ impl Game {
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
         // Set the automatic/manual play settings for each player in order to start the game
         // Create the coordinates per game size
+        self.end_game = false;
         self.auto_play.play_type = [p1_auto, p2_auto];
 
         match self.auto_play {
@@ -152,6 +153,7 @@ impl Game {
         board_state
     }
 
+    /* TODO: Test function remove */
     pub fn render_game_state(&self) -> String {
         let state: String = format!("Current Player: {}, End Game: {}, Winner: {}", 
                                      &self.curr_player, 
@@ -178,11 +180,11 @@ impl Game {
         self.curr_player = self.switch_player();
     }
 
-    pub fn end_game(&self) -> bool {
+    pub fn get_end_game(&self) -> bool {
         self.end_game
     }
 
-    pub fn game_over(&self) -> usize {
+    pub fn get_winner(&self) -> usize {
         self.winner
     }
 
@@ -201,7 +203,7 @@ impl Game {
                      [' ', ' ', ' '], 
                      [' ', ' ', ' ']];
         self.curr_player = 0;
-        self.end_game = false;
+        self.end_game = true;
         self.coordinates.clear();
         self.coordinates = coord_mapping();
         self.winner = NO_WIN;
