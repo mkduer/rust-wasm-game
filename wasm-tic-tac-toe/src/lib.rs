@@ -16,8 +16,6 @@ use std::io::{stdin, stdout, Write};
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-const P1_PLAY: bool = false;    // player 1 is set to `false` for automated play to start
-const P2_PLAY: bool = true;     // player 2 is set to `true` for manual play to start
 const P1: char = 'X';           // player 1's piece
 const P2: char = 'O';           // player 2's piece
 const SIZE: usize = 3;          // row/col sizes for board
@@ -114,6 +112,7 @@ impl Game {
     pub fn start(&mut self, p1_auto: bool, p2_auto: bool) {
         // Set the automatic/manual play settings for each player in order to start the game
         // Create the coordinates per game size
+        self.end_game = false;
         self.auto_play.play_type = [p1_auto, p2_auto];
 
         match self.auto_play {
@@ -144,9 +143,9 @@ impl Game {
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &self.board {
-            board_state += &format!("\n  {} ║ {} ║ {}\n", row[0], row[1], row[2]);
+            board_state += &format!("\n {} ║ {} ║ {}\n", row[0], row[1], row[2]);
             if total_lines > 0 {
-                board_state += &format!(" ═══╬═══╬═══\n");
+                board_state += &format!("═══╬═══╬═══\n");
                 total_lines -= 1;
             }
         }
@@ -154,6 +153,7 @@ impl Game {
         board_state
     }
 
+    /* TODO: Test function remove */
     pub fn render_game_state(&self) -> String {
         let state: String = format!("Current Player: {}, End Game: {}, Winner: {}", 
                                      &self.curr_player, 
@@ -180,11 +180,11 @@ impl Game {
         self.curr_player = self.switch_player();
     }
 
-    pub fn end_game(&self) -> bool {
+    pub fn get_end_game(&self) -> bool {
         self.end_game
     }
 
-    pub fn game_over(&self) -> usize {
+    pub fn get_winner(&self) -> usize {
         self.winner
     }
 
@@ -203,7 +203,7 @@ impl Game {
                      [' ', ' ', ' '], 
                      [' ', ' ', ' ']];
         self.curr_player = 0;
-        self.end_game = false;
+        self.end_game = true;
         self.coordinates.clear();
         self.coordinates = coord_mapping();
         self.winner = NO_WIN;
