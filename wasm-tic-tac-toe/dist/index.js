@@ -6,7 +6,7 @@
 import { Game } from "../pkg/wasm_tic_tac_toe";
 
 const DRAW = 9;
-const SECONDS = 0.5;
+const SECONDS = 2;
 const MS = 1000;
 const DELAY = SECONDS * MS;
 
@@ -74,21 +74,23 @@ async function play(game, players, board, game_state, winner, start_visible, sta
   do {
     await sleep();
 
-    // if the reset button is selected
+    // listen for reset
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, board, game_state, winner, reset);
     };
-
-    if (local_reset === false) {
+    
+    // if reset button was selected
+    if (!local_reset) {
       tick(game, board, game_state);
     }
+
+    // check for end game
     end_game = game.get_end_game();
-  } while (!end_game);
+  } while (!end_game && !local_reset);
 
   // select next function based on whether the game
   // stopped by reset or by reaching the end game
   if (local_reset) {
-    console.log('GAME was RESET');
     return listen();
   } else {
     return game_over_msg(game, winner);
