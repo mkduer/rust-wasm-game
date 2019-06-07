@@ -131,6 +131,7 @@ impl Game {
 
 
     pub fn render_board(&self) -> String {
+        // redner board as a string (for WASM)
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &self.board {
@@ -143,6 +144,22 @@ impl Game {
         board_state += &format!("\n");
         board_state
     }
+
+    pub fn render_indexed_board(&mut self) -> String {
+        // render indexed board as a string (for WASM) to allow for keystrokes
+        let mut board_state: String = "".to_string();
+        let mut total_lines = &SIZE - 1;
+        for row in &BOARD_IDX {
+            board_state += &format!("\n {}   {}   {}\n", row[0], row[1], row[2]);
+            if total_lines > 0 {
+                board_state += &format!("           \n");
+                total_lines -= 1;
+            }
+        }
+        board_state += &format!("\n");
+        board_state
+    }
+
 
     /* TODO: Test function remove */
     pub fn render_game_state(&self) -> String {
@@ -225,10 +242,6 @@ impl Game {
 
     fn manual_move(&mut self) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        println!("\nWhere do you want to place your piece? ");
-        self.display_indexed_board();
-
-        // Get user's choice for piece placement
         let mut loc = self.get_user_input();
         let mut valid: bool = self.coordinates[loc].legal;
 
@@ -239,19 +252,6 @@ impl Game {
             valid = self.coordinates[loc].legal;
         }
         loc
-    }
-
-    fn display_indexed_board(&mut self) {
-        // Displays board with index repreesentations for placing pieces
-        let mut total_lines = &SIZE - 1;
-        for row in &BOARD_IDX {
-            println!("  {} | {} | {}", row[0], row[1], row[2]);
-            if total_lines > 0 {
-                println!(" -----------");
-                total_lines -= 1;
-            }
-        }
-        println!("\n");
     }
 
     fn get_user_input(&mut self) -> usize {

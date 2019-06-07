@@ -2,6 +2,8 @@
 
 This version of the Rust tic-tac-toe game will be compiled over to WebAssembly (WASM). 
 
+This project was built with Ubuntu 18.04 using a Firefox browser. Please use the listed versions for Rust dependencies and javascript packages, otherwise compiler warnings and failed builds will likely occur. Following the provided build steps will help in getting the project built correctly. However, due to the changing tools and the newness of WASM, this program cannot be guaranteed to work with different environments.
+
 ## Build 
 
 Clone or fork the repo: `git clone git@github.com:mkduer/rust-wasm-game.git`
@@ -14,10 +16,10 @@ Build dependencies and start the web server with the following sequence of comma
   `npm install`  
   `npm start`  
 
-## Next Steps...
-- Compile to WASM (wip) with a cli-like appearance for proof-of-concept browser game
-- Try another implementation with `serde`
-- Try to get WASM and React.js working together
+## Current Work...
+
+- Implementing the components for manual play in the web browser.
+- Alter design from the initial command-line implementation to a more intuitive browser design allowing for mouse-clicks
   
 ## Resources
 
@@ -26,8 +28,7 @@ The following resources were the most helpful in learning more about Rust + WASM
 *  [Compiling from Rust to WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Rust_to_wasm)
 *  [wasm-bindgen](https://rustwasm.github.io/docs/wasm-bindgen/introduction.html)
 
-Some of the main challenges were finding recent articles and examples specifically using the specific set of languages I wanted to learn: Rust, WASM and React.js. There were many issues trying to build with outdated tool versions, limited error handling in WASM, and much of this project demonstrates learning based on trial + test experimentation.
-
+Compiling Rust over to WASM was great fun once the compiliation was successful. I did run into obstacles due to versioning, changing compatible tools, and limited, working examples outside of the Rust manuals for wasm and wasm-bindgen for more modern versions. Most hurdles I ran into involved in-progress `wasm-bindgen` features, which were resolved by reverting back to the versions used in the [Rust-WASM tutorial](https://rustwasm.github.io/docs/book/introduction.html) for creating Conway's Game of Life. This is a fantastic tutorial and highly recommended. I suspect that the tools will become more stable and reliable over time.
 
 ##### Copyright (c) 2019 Michelle Duer
 
