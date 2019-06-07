@@ -14,12 +14,9 @@ This version takes a similar implementation as the previous in terms of game pla
 
 WebAssembly is still a new-ish technology that was first announced in 2015. This assembly-like language allows for languages like Rust/C/C++ to be compiled with their memory-saving, efficiency, and possibly increased security feautres (in the case of Rust) that can be intertwined with javascript in the browser. 
 
-This project was built with Ubuntu 18.04 using a Firefox browser. While there is a lot of anticipation for the benefits of WASM, I ran into many obstacles due to versioning, changing compatible tools, and limited, working examples outside of the Rust manuals for wasm and wasm-bindgen for more modern versions. Most hurdles I ran into involved in-progress `wasm-bindgen` features (such as imports for javascript), which were resolved by reverting back to the versions used in the [Rust-WASM tutorial](https://rustwasm.github.io/docs/book/introduction.html) for creating Conway's Game of Life. This is a fantastic tutorial and highly recommended.
+This project was built with Ubuntu 18.04 using a Firefox browser. Compiling Rust over to WASM was great fun once the compiliation was successful. I did run into obstacles due to versioning, changing compatible tools, and limited, working examples outside of the Rust manuals for wasm and wasm-bindgen for more modern versions. Most hurdles I ran into involved in-progress `wasm-bindgen` features, which were resolved by reverting back to the versions used in the [Rust-WASM tutorial](https://rustwasm.github.io/docs/book/introduction.html) for creating Conway's Game of Life. This is a fantastic tutorial and highly recommended. I suspect that the tools will become more stable and reliable over time.
 
 Please use the listed versions for Rust dependencies and javascript packages, otherwise compiler warnings and failed builds will likely occur. Steps for doing so can be found in the project directory's [README.md](https://github.com/mkduer/rust-wasm-game/tree/master/wasm-tic-tac-toe).
-
-Note: This version is still in-progress as of June 2, 2019.
-
 
 ##### Copyright (c) 2019 Michelle Duer
 
