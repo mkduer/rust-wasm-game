@@ -62,10 +62,13 @@ function begin(game, reset, start_visible, start_collapsed,
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
+  console.log('manual = ' + manual)
+
   render(game, players, board, game_state);
 
   if (manual) {
     manual_dialogue.style.visibility = "visible";
+    document.getElementById("manual-dialogue").textContent = "Where do you want to place your piece?";
     manual_play(game, players, board, game_state, winner,
         start_visible, start_collapsed, reset, manual_dialogue);
   } else {

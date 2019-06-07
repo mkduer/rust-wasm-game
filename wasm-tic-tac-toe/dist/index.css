@@ -31,7 +31,7 @@ body {
 }
 #manual-dialogue {
     visibility: collapse;
-    margin: 0px;
+    margin: 10px;
 }
 #players {
     font-family: "Nanum Pen Script";
