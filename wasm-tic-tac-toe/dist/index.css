@@ -13,7 +13,7 @@ body {
     white-space: pre;
 }
 
-.btn-group {
+div.btn-group {
     margin: 10px;
 }
 
@@ -32,11 +32,13 @@ body {
 #manual-dialogue {
     visibility: collapse;
     margin: 10px;
+    color: hsl(218, 92%, 43%)
 }
 #players {
     font-family: "Nanum Pen Script";
     color: hsl(223, 8%, 50%);
     font-size: 115%;
+    margin: 5px;
 }
 #board {
     font-family: "Monospace";
@@ -44,10 +46,19 @@ body {
     padding: 5px;
     margin: 5px;
     line-height: 0.59;
+    visibility: collapse;
 }
+#transparent-box {
+  margin: 30px;
+  background-color: ff00ff; /* #ffffff; */
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+}
+
 #winner {
     font-family: "Libre Franklin";
     color: hsl(211, 80%, 48%);
+    margin: 10px;
 }
 
 p.footer {
