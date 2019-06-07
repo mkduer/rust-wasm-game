@@ -6,8 +6,6 @@
 mod utils;
 
 use wasm_bindgen::prelude::*;
-
-use std::fmt;
 use rand::{thread_rng, Rng};
 use std::io::{stdin, stdout, Write};
 
@@ -360,26 +358,4 @@ fn coord_mapping() -> Vec<Coord> {
         }
     }
     coordinates
-}
-
-#[allow(unused_must_use)]
-impl fmt::Display for Game {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        //  Display game state (allows display with macros like println!)
-        let mut game_status = format!("in play, {}'s turn", &self.players[self.curr_player]);
-        if self.end_game == true {
-            game_status = "ended".to_string();
-        }
-
-        let mut total_lines = &SIZE - 1;
-        write!(formatter, "\nGame {}:\n", &game_status);
-        for row in &self.board {
-            write!(formatter, "  {} | {} | {}\n", row[0], row[1], row[2]);
-            if total_lines > 0 {
-                write!(formatter, " -----------\n");
-                total_lines -= 1;
-            }
-        }
-        Ok(())
-    }
 }
