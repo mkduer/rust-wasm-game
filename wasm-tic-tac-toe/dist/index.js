@@ -6,7 +6,7 @@
 import { Game } from "../pkg/wasm_tic_tac_toe";
 
 const DRAW = 9;
-const SECONDS = 2;
+const SECONDS = 0.5;
 const MS = 1000;
 const DELAY = SECONDS * MS;
 
@@ -22,6 +22,7 @@ function listen() {
   var winner = document.getElementById("winner");
   var player1_type = true;
   var player2_type = true;
+  var manual = false;
   var reset = false;
 
   var game = Game.new();
@@ -36,8 +37,10 @@ function listen() {
     console.log('auto play selected')
     player1_type = true;
     player2_type = true;
+    manual = false;
     game.start(player1_type, player2_type)
-    begin(game, reset, start_visible, start_collapsed, players, game_state, winner)
+    begin(game, reset, start_visible, start_collapsed, 
+          players, game_state, winner, manual)
   };
 
   // settings for manual play button
@@ -45,18 +48,30 @@ function listen() {
     console.log('manual play selected')
     player1_type = true;
     player2_type = false;
+    manual = true;
     game.start(player1_type, player2_type)
-    begin(game, reset, start_visible, start_collapsed, players, game_state, winner)
+    begin(game, reset, start_visible, start_collapsed, 
+          players, game_state, winner, manual)
   };
 }
 
-function begin(game, reset, start_visible, start_collapsed, players, game_state, winner) {
+function begin(game, reset, start_visible, start_collapsed, 
+               players, game_state, winner, manual) {
+  // begins the game by rendering it and playing the game ticks
+  var manual_dialogue = document.getElementById("manual-dialogue");
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
   render(game, players, board, game_state);
-  play(game, players, board, game_state, winner,
-       start_visible, start_collapsed, reset);
+
+  if (manual) {
+    manual_dialogue.style.visibility = "visible";
+    manual_play(game, players, board, game_state, winner,
+        start_visible, start_collapsed, reset, manual_dialogue);
+  } else {
+    auto_play(game, players, board, game_state, winner,
+        start_visible, start_collapsed, reset, manual_dialogue);
+  }
 }
 
 function render(game, players, board, game_state) {
@@ -65,7 +80,8 @@ function render(game, players, board, game_state) {
   game_state.textContent = game.render_game_state();
 }
 
-async function play(game, players, board, game_state, winner, start_visible, start_collapsed, reset) {
+async function manual_play(game, players, board, game_state, winner, 
+                           start_visible, start_collapsed, reset, manual_dialogue) {
   // start the game and loop until end game is reached
   var reset_btn = document.getElementById("reset");
   var end_game = false; 
@@ -76,7 +92,42 @@ async function play(game, players, board, game_state, winner, start_visible, sta
 
     // listen for reset
     reset_btn.onclick = function() {
-        local_reset = reset_all(game, start_visible, start_collapsed, players, board, game_state, winner, reset);
+        local_reset = reset_all(game, start_visible, start_collapsed, players, board, 
+                                game_state, winner, reset, manual_dialogue);
+    };
+    
+    // if reset button was not selected, continue game play
+    if (!local_reset) {
+      tick(game, board, game_state);
+    }
+
+    // check for end game
+    end_game = game.get_end_game();
+  } while (!end_game && !local_reset);
+
+  // select next function based on whether the game
+  // stopped by reset or by reaching the end game
+  if (local_reset) {
+    return listen();
+  } else {
+    return game_over_msg(game, winner);
+  }
+}
+
+async function auto_play(game, players, board, game_state, winner, 
+                         start_visible, start_collapsed, reset, manual_dialogue) {
+  // start the game and loop until end game is reached
+  var reset_btn = document.getElementById("reset");
+  var end_game = false; 
+  var local_reset = false;
+
+  do {
+    await sleep();
+
+    // listen for reset
+    reset_btn.onclick = function() {
+        local_reset = reset_all(game, start_visible, start_collapsed, players, 
+                                board, game_state, winner, reset, manual_dialogue);
     };
     
     // if reset button was selected
@@ -121,14 +172,18 @@ function sleep() {
   return new Promise(resolve => setTimeout(resolve, DELAY));
 }
 
-function reset_all(game, start_visible, start_collapsed, players, board, game_state, winner, reset) {
+function reset_all(game, start_visible, start_collapsed, players, board, 
+                   game_state, winner, reset, manual_dialogue) {
+  // resets the game settings
   reset = true;
   game.reset();
   start_visible.style.visibility = "visible";
   start_collapsed.style.visibility = "collapse";
+  manual_dialogue.style.visibility = "collapse";
   players.textContent = "";
   board.textContent = "";
-  game_state.textContent = "";
   winner.textContent = "";
+  manual_dialogue.textContent = "";
+  game_state.textContent = "";
   return reset;
 }

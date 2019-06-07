@@ -29,6 +29,10 @@ body {
 #start-collapsed {
     visibility: collapse;
 }
+#manual-dialogue {
+    visibility: collapse;
+    margin: 0px;
+}
 #players {
     font-family: "Nanum Pen Script";
     color: hsl(223, 8%, 50%);
@@ -37,8 +41,8 @@ body {
 #board {
     font-family: "Monospace";
     color: hsl(211, 80%, 48%);
-    padding: 10px;
-    margin: 10px;
+    padding: 5px;
+    margin: 5px;
     line-height: 0.59;
 }
 #winner {
