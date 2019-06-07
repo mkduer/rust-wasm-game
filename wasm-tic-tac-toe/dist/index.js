@@ -19,6 +19,7 @@ function listen() {
   var start_collapsed = document.getElementById("start-collapsed");
   var players = document.getElementById("players");
   var board = document.getElementById("board");
+  var trans_board = document.getElementById("transparent-board");
   var game_state = document.getElementById("game-state");
   var winner = document.getElementById("winner");
   var player1_type = true;
@@ -41,7 +42,7 @@ function listen() {
     manual = false;
     game.start(player1_type, player2_type)
     begin(game, reset, start_visible, start_collapsed, 
-          players, board, game_state, winner, manual)
+          players, board, trans_board, game_state, winner, manual)
   };
 
   // settings for manual play button
@@ -52,41 +53,50 @@ function listen() {
     manual = true;
     game.start(player1_type, player2_type)
     begin(game, reset, start_visible, start_collapsed, 
-          players, board, game_state, winner, manual)
+          players, board, trans_board, game_state, winner, manual)
   };
 }
 
 function begin(game, reset, start_visible, start_collapsed, 
-               players, board, game_state, winner, manual) {
+               players, board, trans_board, game_state, winner, manual) {
   // begins the game by rendering it and playing the game ticks
   var manual_dialogue = document.getElementById("manual-dialogue");
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
-  console.log('manual = ' + manual)
-
-  render(game, players, board, game_state);
+  render(game, players, board, game_state, trans_board, manual);
 
   if (manual) {
     manual_dialogue.style.visibility = "visible";
     document.getElementById("manual-dialogue").textContent = "Where do you want to place your piece?";
-    manual_play(game, players, board, game_state, winner,
+    /* TODO
+    manual_play(game, players, board, trans_board, game_state, winner,
         start_visible, start_collapsed, reset, manual_dialogue);
+        */
   } else {
-    auto_play(game, players, board, game_state, winner,
+    auto_play(game, players, board, trans_board, game_state, winner,
         start_visible, start_collapsed, reset, manual_dialogue);
   }
 }
 
-function render(game, players, board, game_state) {
+function render(game, players, board, game_state, trans_board, manual) {
   // render game content
   players.textContent = game.render_players();
   board.style.visibility = "visible";
   board.textContent = game.render_board();
+  if (manual) {
+    render_overlay(game, trans_board)
+  }
   game_state.textContent = game.render_game_state();
 }
 
-async function manual_play(game, players, board, game_state, winner, 
+function render_overlay(game, trans_board) {
+  // render transparent overlay with indexed board
+  trans_board.textContent = game.render_indexed_board();
+  trans_board.style.visibility = "visible";
+}
+
+async function manual_play(game, players, board, trans_board, game_state, winner, 
                            start_visible, start_collapsed, reset, manual_dialogue) {
   // start the game and loop until end game is reached
   var reset_btn = document.getElementById("reset");
@@ -99,7 +109,7 @@ async function manual_play(game, players, board, game_state, winner,
     // listen for reset
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, board, 
-                                game_state, winner, reset, manual_dialogue);
+                                trans_board, game_state, winner, reset, manual_dialogue);
     };
     
     // if reset button was not selected, continue game play
@@ -120,7 +130,7 @@ async function manual_play(game, players, board, game_state, winner,
   }
 }
 
-async function auto_play(game, players, board, game_state, winner, 
+async function auto_play(game, players, board, trans_board, game_state, winner, 
                          start_visible, start_collapsed, reset, manual_dialogue) {
   // start the game and loop until end game is reached
   var reset_btn = document.getElementById("reset");
@@ -133,7 +143,7 @@ async function auto_play(game, players, board, game_state, winner,
     // listen for reset
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, 
-                                board, game_state, winner, reset, manual_dialogue);
+                                board, trans_board, game_state, winner, reset, manual_dialogue);
     };
     
     // if reset button was selected
@@ -179,7 +189,7 @@ function sleep() {
 }
 
 function reset_all(game, start_visible, start_collapsed, players, board, 
-                   game_state, winner, reset, manual_dialogue) {
+                   trans_board, game_state, winner, reset, manual_dialogue) {
   // resets the game settings
   reset = true;
   game.reset();
@@ -187,6 +197,8 @@ function reset_all(game, start_visible, start_collapsed, players, board,
   start_collapsed.style.visibility = "collapse";
   manual_dialogue.style.visibility = "collapse";
   board.style.visibility = "collapse";
+  trans_board.style.visibility = "collapse";
+
   players.textContent = "";
   board.textContent = "";
   winner.textContent = "";

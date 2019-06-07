@@ -150,9 +150,9 @@ impl Game {
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &BOARD_IDX {
-            board_state += &format!("\n {} ║ {} ║ {}\n", row[0], row[1], row[2]);
+            board_state += &format!("\n {}   {}   {}\n", row[0], row[1], row[2]);
             if total_lines > 0 {
-                board_state += &format!("═══╬═══╬═══\n");
+                board_state += &format!("           \n");
                 total_lines -= 1;
             }
         }
