@@ -23,7 +23,6 @@ const BOARD_IDX: [[char; 3]; 3] = [['0', '1', '2'],     // indexed board for use
                                    ['6', '7', '8']];
 
 
-#[wasm_bindgen]
 #[derive(Debug, PartialEq)]
 struct AutoPlay {
     // Struct detailing whether players move automatically or manually
@@ -39,7 +38,6 @@ impl Default for AutoPlay {
     }
 }
 
-#[wasm_bindgen]
 #[derive(Debug, PartialEq)]
 struct Coord {
     // Struct for mapping array indices to coordinates
@@ -48,7 +46,6 @@ struct Coord {
     legal: bool,    // flag: True if it is legal to place a piece on the coordinate, False if coordinate is already full
 }
 
-#[wasm_bindgen]
 #[derive(Debug, PartialEq)]
 struct WinState {
     // Struct containing representations of win states
