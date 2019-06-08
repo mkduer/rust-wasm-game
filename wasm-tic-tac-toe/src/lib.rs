@@ -160,16 +160,6 @@ impl Game {
         board_state
     }
 
-
-    /* TODO: Test function remove */
-    pub fn render_game_state(&self) -> String {
-        let state: String = format!("Current Player: {}, End Game: {}, Winner: {}", 
-                                     &self.curr_player, 
-                                     &self.end_game, 
-                                     &self.winner);
-        state
-    }
-
     pub fn update(&mut self) { 
         // Have the current player choose a location for their move 
         let loc: usize = match &self.auto_play.play_type[self.curr_player] {

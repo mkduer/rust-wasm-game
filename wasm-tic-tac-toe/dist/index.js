@@ -20,7 +20,6 @@ function listen() {
   var players = document.getElementById("players");
   var board = document.getElementById("board");
   var trans_board = document.getElementById("transparent-board");
-  var game_state = document.getElementById("game-state");
   var winner = document.getElementById("winner");
   var player1_type = true;
   var player2_type = true;
@@ -42,7 +41,7 @@ function listen() {
     manual = false;
     game.start(player1_type, player2_type)
     begin(game, reset, start_visible, start_collapsed, 
-          players, board, trans_board, game_state, winner, manual)
+          players, board, trans_board, winner, manual)
   };
 
   // settings for manual play button
@@ -53,33 +52,33 @@ function listen() {
     manual = true;
     game.start(player1_type, player2_type)
     begin(game, reset, start_visible, start_collapsed, 
-          players, board, trans_board, game_state, winner, manual)
+          players, board, trans_board, winner, manual)
   };
 }
 
 function begin(game, reset, start_visible, start_collapsed, 
-               players, board, trans_board, game_state, winner, manual) {
+               players, board, trans_board, winner, manual) {
   // begins the game by rendering it and playing the game ticks
   var manual_dialogue = document.getElementById("manual-dialogue");
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
-  render(game, players, board, game_state, trans_board, manual);
+  render(game, players, board, trans_board, manual);
 
   if (manual) {
     manual_dialogue.style.visibility = "visible";
     document.getElementById("manual-dialogue").textContent = "Where do you want to place your piece?";
     /* TODO
-    manual_play(game, players, board, trans_board, game_state, winner,
+    manual_play(game, players, board, trans_board, winner,
         start_visible, start_collapsed, reset, manual_dialogue);
         */
   } else {
-    auto_play(game, players, board, trans_board, game_state, winner,
+    auto_play(game, players, board, trans_board, winner,
         start_visible, start_collapsed, reset, manual_dialogue);
   }
 }
 
-function render(game, players, board, game_state, trans_board, manual) {
+function render(game, players, board, trans_board, manual) {
   // render game content
   players.textContent = game.render_players();
   board.style.visibility = "visible";
@@ -87,7 +86,6 @@ function render(game, players, board, game_state, trans_board, manual) {
   if (manual) {
     render_overlay(game, trans_board)
   }
-  game_state.textContent = game.render_game_state();
 }
 
 function render_overlay(game, trans_board) {
@@ -96,7 +94,7 @@ function render_overlay(game, trans_board) {
   trans_board.style.visibility = "visible";
 }
 
-async function manual_play(game, players, board, trans_board, game_state, winner, 
+async function manual_play(game, players, board, trans_board, winner, 
                            start_visible, start_collapsed, reset, manual_dialogue) {
   // start the game and loop until end game is reached
   var reset_btn = document.getElementById("reset");
@@ -109,12 +107,12 @@ async function manual_play(game, players, board, trans_board, game_state, winner
     // listen for reset
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, board, 
-                                trans_board, game_state, winner, reset, manual_dialogue);
+                                trans_board, winner, reset, manual_dialogue);
     };
     
     // if reset button was not selected, continue game play
     if (!local_reset) {
-      tick(game, board, game_state);
+      tick(game, board);
     }
 
     // check for end game
@@ -130,7 +128,7 @@ async function manual_play(game, players, board, trans_board, game_state, winner
   }
 }
 
-async function auto_play(game, players, board, trans_board, game_state, winner, 
+async function auto_play(game, players, board, trans_board, winner, 
                          start_visible, start_collapsed, reset, manual_dialogue) {
   // start the game and loop until end game is reached
   var reset_btn = document.getElementById("reset");
@@ -143,12 +141,12 @@ async function auto_play(game, players, board, trans_board, game_state, winner,
     // listen for reset
     reset_btn.onclick = function() {
         local_reset = reset_all(game, start_visible, start_collapsed, players, 
-                                board, trans_board, game_state, winner, reset, manual_dialogue);
+                                board, trans_board, winner, reset, manual_dialogue);
     };
     
     // if reset button was selected
     if (!local_reset) {
-      tick(game, board, game_state);
+      tick(game, board);
     }
 
     // check for end game
@@ -164,11 +162,10 @@ async function auto_play(game, players, board, trans_board, game_state, winner,
   }
 }
 
-function tick(game, board, game_state) {
+function tick(game, board) {
   // Run the game for one "tick" or move 
   game.update();
   board.textContent = game.render_board();
-  game_state.textContent = game.render_game_state();
 }
 
 function game_over_msg(game, winner) {
@@ -189,7 +186,7 @@ function sleep() {
 }
 
 function reset_all(game, start_visible, start_collapsed, players, board, 
-                   trans_board, game_state, winner, reset, manual_dialogue) {
+                   trans_board, winner, reset, manual_dialogue) {
   // resets the game settings
   reset = true;
   game.reset();
@@ -203,6 +200,5 @@ function reset_all(game, start_visible, start_collapsed, players, board,
   board.textContent = "";
   winner.textContent = "";
   manual_dialogue.textContent = "";
-  game_state.textContent = "";
   return reset;
 }
