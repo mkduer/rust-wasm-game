@@ -28,6 +28,7 @@ function listen() {
   var reset = false;
 
   var game = Game.new();
+  winner.style.visibility = "collapse";
 
   // setup game play style by waiting for the user
   // to select automatic or manual play
@@ -221,11 +222,8 @@ async function auto_play(game, players, board, trans_board, winner, manual,
 
     // if reset button was selected
     if (!local_reset) {
-      auto_tick(game, board);
+      end_game = auto_tick(game, board);
     }
-
-    // check for end game
-    end_game = game.get_end_game();
   } while (!end_game && !local_reset);
 
   // select next function based on whether the game
@@ -245,17 +243,20 @@ function auto_tick(game, board) {
   } else {
     throw "auto_tick function failed to update board";
   }
+  return game.get_end_game();
 }
 
 function game_over_msg(game, winner) {
   // displays whether the game ended in a draw or a win,
   // as well as the winner in the latter case
+
   const game_over = game.get_winner();
   if (game_over === DRAW) {
     winner.textContent = game.declare_draw();  
   } else {
     winner.textContent = game.declare_winner();  
   }
+  winner.style.visibility = "visible";
 }
 
 function sleep(manual) {
@@ -278,7 +279,6 @@ function reset_all(game, start_visible, start_collapsed, players, board,
   start_collapsed.style.visibility = "collapse";
   manual_dialogue.style.visibility = "collapse";
   board.style.visibility = "collapse";
-  winner.style.visibility = "collapse";
   trans_board.style.visibility = "collapse";
 
   players.textContent = "";
