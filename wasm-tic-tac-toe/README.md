@@ -22,7 +22,12 @@ Build dependencies and start the web server with the following sequence of comma
 ## Current Work and Next Steps
 
 - Implementing the components for manual play in the web browser.
+  - [ ] Communicate from front-end javascript to backend Rust-compiled-to-WASM with user keystrokes
+  - [ ] Fix asynchronous calls between automatic player and manual player
+  - [ ] Remove indices from transparent overlay as pieces are placed on cells
 - Alter design from the initial command-line implementation to a more intuitive browser design allowing for mouse-clicks
+  - [ ] Turn String-type board into a struct of Cells
+  - [ ] Make each cell clickable
   
 ## Resources
 
