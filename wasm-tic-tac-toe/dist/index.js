@@ -115,19 +115,18 @@ async function manual_play(game, players, board, trans_board, winner,
                               trans_board, winner, reset, manual_dialogue);
   };
 
-  /* TODO
   do {
     await sleep();
     
     // if reset button was not selected, continue game play
     if (!local_reset) {
-      tick(game, board);
+      auto_tick(game, board);
+      manual_tick(game, board);
     }
 
     // check for end game
     end_game = game.get_end_game();
   } while (!end_game && !local_reset);
-  */
 
   // select next function based on whether the game
   // stopped by reset or by reaching the end game
@@ -136,6 +135,22 @@ async function manual_play(game, players, board, trans_board, winner,
   } else {
     return game_over_msg(game, winner);
   }
+}
+
+function manual_tick(game, board) {
+  console.log('time to make a manual move!');
+  // Run the game for one "tick" or move 
+
+  // TODO: listen for keystroke
+  // TODO: update rendering of indexed board (in Rust)
+  var success = game.update();
+
+  // 9 is an invalid location and suggests the user did not provide a valid index
+  while (success == 9) {
+    document.getElementById("manual-dialogue").textContent = "Please select a valid cell number";
+    success = game.update();
+  }
+  board.textContent = game.render_board();
 }
 
 async function auto_play(game, players, board, trans_board, winner, 
@@ -155,7 +170,7 @@ async function auto_play(game, players, board, trans_board, winner,
 
     // if reset button was selected
     if (!local_reset) {
-      tick(game, board);
+      auto_tick(game, board);
     }
 
     // check for end game
@@ -171,10 +186,15 @@ async function auto_play(game, players, board, trans_board, winner,
   }
 }
 
-function tick(game, board) {
+function auto_tick(game, board) {
   // Run the game for one "tick" or move 
-  game.update();
-  board.textContent = game.render_board();
+  var success = game.update();
+  console.log('success = ' + success)
+  if (success > -1 && success < 9) {
+    board.textContent = game.render_board();
+  } else {
+    throw "auto_tick function failed to update board";
+  }
 }
 
 function game_over_msg(game, winner) {

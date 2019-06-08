@@ -161,12 +161,17 @@ impl Game {
         board_state
     }
 
-    pub fn update(&mut self) { 
+    pub fn update(&mut self, manual_move: usize) -> usize { 
         // Have the current player choose a location for their move 
+        let selected_move: usize = manual_move;
         let loc: usize = match &self.auto_play.play_type[self.curr_player] {
             true => self.auto_move(),
-            false => self.manual_move(),
+            false => self.manual_move(selected_move),
         };
+
+        if loc == 9 {
+            return loc;
+        }
 
         // Update the board and coordinates
         let x = self.coordinates[loc].x;
@@ -177,6 +182,8 @@ impl Game {
         // Check for endgame and change players
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
+
+        loc
     }
 
     pub fn get_end_game(&self) -> bool {
@@ -235,9 +242,9 @@ impl Game {
         loc
     }
 
-    fn manual_move(&mut self) -> usize {
+    fn manual_move(&mut self, selected_move: usize) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        let mut loc = self.get_user_input();
+        let mut loc = selected_move;
         let mut valid: bool = self.coordinates[loc].legal;
 
         // Make sure the move is valid
