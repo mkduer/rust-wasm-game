@@ -12,12 +12,12 @@ This project has two versions of tic-tac-toe in Rust as summarized below. The sp
 	     |_ src
 	            |_ main.rs (unit tests are in here)
 	wasm-tic-tac-toe
-   	  |_ README.md
+   	     |_ README.md
 	     |_ Cargo.toml
 	     |_ src
 	            |_ lib.rs
 	            |_ utils.rs
-        |_ dist
+             |_ dist
 	            |_ bootstrap.js
 	            |_ index.css
 	            |_ index.html
@@ -25,7 +25,7 @@ This project has two versions of tic-tac-toe in Rust as summarized below. The sp
 	            |_ package.json
 	            |_ package-lock.json
 	            |_ webpack.config.js
-        |_ tests
+             |_ tests
 	            |_ web.rs
 ```
 
