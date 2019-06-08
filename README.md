@@ -3,9 +3,9 @@
 This project has two versions of tic-tac-toe in Rust as summarized below. The specifications can be found in the `specs_whitepaper.pdf`. The file structure is organized as follows:
 
 ```
-   LICENSE
-   README.md
-   specs_whitepaper.pdf
+        LICENSE
+        README.md
+        specs_whitepaper.pdf
 	tic-tac-toe
 	     |_ README.md
 	     |_ Cargo.toml
