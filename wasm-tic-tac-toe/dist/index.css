@@ -25,6 +25,9 @@ p.footer {
     margin: 5px;
     line-height: 0.59;
 }
+.results {
+  transform: translate(0%, 0%);
+}
 
 #title {
     font-family: "Rock Salt";
@@ -58,7 +61,7 @@ p.footer {
   color: hsl(209, 19%, 50%);
   opacity: 0.5;
   filter: alpha(opacity=60);
-  transform: translate(0%,-111%);
+  transform: translate(0%, -111%);
   visibility: collapse;
 }
 #winner {
