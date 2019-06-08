@@ -39,9 +39,10 @@ This implementation creates a command-line version of the game allowing for manu
 
 This version takes a similar implementation as the previous in terms of game play. However, this Rust code is compiled to WebAssembly (WASM) using `wasm-bindgen`, `wasm-pack` and other tools in order to make the game playable through the browser. 
 
-<a href="https://youtu.be/8lt9jbfSNY0">
+## <a href="https://youtu.be/8lt9jbfSNY0">
 Click Image to Watch Youtube Demo:
-</a>
+</a>  
+
 
 <a href="https://youtu.be/8lt9jbfSNY0">
 <img src="extra/wasm-o-wins.png" 
