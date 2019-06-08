@@ -213,8 +213,3 @@ function reset_all(game, start_visible, start_collapsed, players, board,
 
   return reset;
 }
-
-// TODO
-function reset_menu_transform() {
-
-}

@@ -82,7 +82,7 @@ pub struct Game {
 #[wasm_bindgen]
 impl Game {
     pub fn new() -> Self {
-        // allows for console.log debugging of Rust
+        // Allows for console.log debugging of Rust
         utils::set_panic_hook();
 
         // Initializes the game board, first player piece and default autoplay for both players
@@ -123,6 +123,7 @@ impl Game {
     }
 
     pub fn render_players(&self) -> String {
+        // Render players and their playing type (e.g. automatic/manual)
         let status: String = format!("Player 1 :: {} ({} play)\nPlayer 2 :: {} ({} play)", 
                                      P1, &self.auto_play.play_type_str[0], 
                                      P2, &self.auto_play.play_type_str[1]);
@@ -131,7 +132,7 @@ impl Game {
 
 
     pub fn render_board(&self) -> String {
-        // redner board as a string (for WASM)
+        // Render board as a string (for WASM)
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &self.board {
@@ -146,7 +147,7 @@ impl Game {
     }
 
     pub fn render_indexed_board(&mut self) -> String {
-        // render indexed board as a string (for WASM) to allow for keystrokes
+        // Render indexed board as a string (for WASM) to allow for keystrokes
         let mut board_state: String = "".to_string();
         let mut total_lines = &SIZE - 1;
         for row in &BOARD_IDX {
@@ -179,18 +180,22 @@ impl Game {
     }
 
     pub fn get_end_game(&self) -> bool {
+        // Returns end_game boolean
         self.end_game
     }
 
     pub fn get_winner(&self) -> usize {
+        // Returns winner value
         self.winner
     }
 
     pub fn declare_draw(&self) -> String {
+        // Drawn game message
         "DRAW: nobody wins".to_string()
     }
 
     pub fn declare_winner(&self) -> String {
+        // Winner message
         let winner = format!("Player {} is the WINNER!", self.players[self.winner]);
         winner
     }
