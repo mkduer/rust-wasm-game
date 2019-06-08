@@ -21,6 +21,7 @@ function listen() {
   var board = document.getElementById("board");
   var trans_board = document.getElementById("transparent-board");
   var winner = document.getElementById("winner");
+  var reset_btn = document.getElementById("reset");
   var player1_type = true;
   var player2_type = true;
   var manual = false;
@@ -40,7 +41,7 @@ function listen() {
     player2_type = true;
     manual = false;
     game.start(player1_type, player2_type)
-    begin(game, reset, start_visible, start_collapsed, 
+    begin(game, reset, reset_btn, start_visible, start_collapsed, 
           players, board, trans_board, winner, manual)
   };
 
@@ -51,15 +52,22 @@ function listen() {
     player2_type = false;
     manual = true;
     game.start(player1_type, player2_type)
-    begin(game, reset, start_visible, start_collapsed, 
+    begin(game, reset, reset_btn, start_visible, start_collapsed, 
           players, board, trans_board, winner, manual)
   };
 }
 
-function begin(game, reset, start_visible, start_collapsed, 
+function begin(game, reset, reset_btn, start_visible, start_collapsed, 
                players, board, trans_board, winner, manual) {
   // begins the game by rendering it and playing the game ticks
   var manual_dialogue = document.getElementById("manual-dialogue");
+
+  if (manual) {
+    // TODO: Test that these transforms work correctly
+    winner.style.transform = 'translate(0%, -450%)'
+    players.style.transform = 'translate(0%, -190%)'
+    reset_btn.style.transform = 'translate(0%, -300%)'
+  }
   start_visible.style.visibility = "collapse";
   start_collapsed.style.visibility = "visible";
 
@@ -70,11 +78,11 @@ function begin(game, reset, start_visible, start_collapsed,
     document.getElementById("manual-dialogue").textContent = "Where do you want to place your piece?";
     /* TODO
     manual_play(game, players, board, trans_board, winner,
-        start_visible, start_collapsed, reset, manual_dialogue);
+        start_visible, start_collapsed, reset, reset_btn, manual_dialogue);
         */
   } else {
     auto_play(game, players, board, trans_board, winner,
-        start_visible, start_collapsed, reset, manual_dialogue);
+        start_visible, start_collapsed, reset, reset_btn, manual_dialogue);
   }
 }
 
@@ -95,9 +103,8 @@ function render_overlay(game, trans_board) {
 }
 
 async function manual_play(game, players, board, trans_board, winner, 
-                           start_visible, start_collapsed, reset, manual_dialogue) {
+                           start_visible, start_collapsed, reset, reset_btn, manual_dialogue) {
   // start the game and loop until end game is reached
-  var reset_btn = document.getElementById("reset");
   var end_game = false; 
   var local_reset = false;
 
@@ -129,9 +136,8 @@ async function manual_play(game, players, board, trans_board, winner,
 }
 
 async function auto_play(game, players, board, trans_board, winner, 
-                         start_visible, start_collapsed, reset, manual_dialogue) {
+                         start_visible, start_collapsed, reset, reset_btn, manual_dialogue) {
   // start the game and loop until end game is reached
-  var reset_btn = document.getElementById("reset");
   var end_game = false; 
   var local_reset = false;
 
@@ -201,4 +207,9 @@ function reset_all(game, start_visible, start_collapsed, players, board,
   winner.textContent = "";
   manual_dialogue.textContent = "";
   return reset;
+}
+
+// TODO
+function reset_menu_transform() {
+
 }
