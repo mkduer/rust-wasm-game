@@ -1,6 +1,33 @@
 # rust-wasm-game
 
-This project has two versions of tic-tac-toe in Rust.
+This project has two versions of tic-tac-toe in Rust as summarized below. The specifications can be found in the `specs_whitepaper.pdf`. The file structure is organized as follows:
+
+```
+   LICENSE
+   README.md
+   specs_whitepaper.pdf
+	tic-tac-toe
+	     |_ README.md
+	     |_ Cargo.toml
+	     |_ src
+	            |_ main.rs (unit tests are in here)
+	wasm-tic-tac-toe
+   	  |_ README.md
+	     |_ Cargo.toml
+	     |_ src
+	            |_ lib.rs
+	            |_ utils.rs
+        |_ dist
+	            |_ bootstrap.js
+	            |_ index.css
+	            |_ index.html
+	            |_ index.js
+	            |_ package.json
+	            |_ package-lock.json
+	            |_ webpack.config.js
+        |_ tests
+	            |_ web.rs
+```
 
 ### tic-tac-toe
 
