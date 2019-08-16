@@ -7,7 +7,6 @@ mod utils;
 
 use wasm_bindgen::prelude::*;
 use rand::{thread_rng, Rng};
-use std::io::{stdin, stdout, Write};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
@@ -161,12 +160,17 @@ impl Game {
         board_state
     }
 
-    pub fn update(&mut self) { 
+    pub fn update(&mut self, manual_move: usize) -> usize { 
         // Have the current player choose a location for their move 
+        let selected_move: usize = manual_move;
         let loc: usize = match &self.auto_play.play_type[self.curr_player] {
             true => self.auto_move(),
-            false => self.manual_move(),
+            false => self.manual_move(selected_move),
         };
+
+        if loc == 9 {
+            return loc;
+        }
 
         // Update the board and coordinates
         let x = self.coordinates[loc].x;
@@ -177,6 +181,8 @@ impl Game {
         // Check for endgame and change players
         self.end_game = self.is_endgame();
         self.curr_player = self.switch_player();
+
+        loc
     }
 
     pub fn get_end_game(&self) -> bool {
@@ -235,44 +241,13 @@ impl Game {
         loc
     }
 
-    fn manual_move(&mut self) -> usize {
+    fn manual_move(&mut self, selected_move: usize) -> usize {
         // Manual Move: Ask the user for the location where they want to place their piece
-        let mut loc = self.get_user_input();
-        let mut valid: bool = self.coordinates[loc].legal;
 
         // Make sure the move is valid
-        while valid == false {
-            println!("\nA piece is already placed there. Please enter a valid location: ");
-            loc = self.get_user_input();
-            valid = self.coordinates[loc].legal;
-        }
-        loc
-    }
-
-    fn get_user_input(&mut self) -> usize {
-        // Grabs the user's move from stdin and checks for validity
-        let mut stdout = stdout();
-        let stdin = stdin();
-        let _clean = match stdout.flush() {
-            Ok(result) => result,
-            Err(error) => panic!("Unable to flush buffer, {}", error),
-        };
-
-        // Grab user's response
-        let mut user_response = String::with_capacity(100);
-        stdin.read_line(&mut user_response).unwrap();
-
-        // Check that the input was a valid character
-        let mut first_char = user_response.chars().next().unwrap();
-        match &mut first_char {
-            '0' ... '8' => {
-                println!("You entered: {}", first_char);
-                first_char.to_digit(10).unwrap() as usize
-            },
-            _ => { 
-                println!("\nPlease enter a valid response: ");
-                self.get_user_input()
-            },
+        match &selected_move {
+            0 ... 8 => selected_move,
+            _ => 9,
         }
     }
 
